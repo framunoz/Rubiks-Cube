@@ -1,14 +1,12 @@
 import enum
 
-from colorama import Fore, Style
-
 _COLORS = {
-    "green": Fore.GREEN,
-    "red": Fore.RED,
-    "yellow": Fore.YELLOW,
-    "orange": Style.BRIGHT + Fore.RED,
-    "blue": Fore.BLUE,
-    "white": Style.DIM + Fore.WHITE
+    "green": "\033[38;5;46m",
+    "red": "\033[38;5;1m",
+    "yellow": "\033[38;5;226m",
+    "orange": "\033[38;5;208m",
+    "blue": "\033[38;5;21m",
+    "white": "\033[38;5;252m"
 }
 
 
@@ -24,7 +22,7 @@ class Color(enum.Enum):
     WHITE = "white"
 
     def __repr__(self):
-        return _COLORS[self.value] + self.name[0] + Style.RESET_ALL
+        return f"{_COLORS[self.value]}{self.name[0]}\033[0;0m"
 
 
 class Direction(enum.Enum):
@@ -32,3 +30,12 @@ class Direction(enum.Enum):
     R = 1
     D = 2
     L = 3
+
+
+def main():
+    for c in Color:
+        print(repr(c))
+
+
+if __name__ == '__main__':
+    main()

@@ -10,18 +10,18 @@ from rubiks_cube.utils import Direction as Direc
 Slice = Union[slice, int]
 TupleSlice = Tuple[Slice, Slice]
 
+_ALL: Slice = slice(None, None)
+
+_DICT_TUPLE_SLICES: dict[Direc, TupleSlice] = {
+    Direc.U: (0, _ALL),
+    Direc.R: (_ALL, -1),
+    Direc.D: (-1, _ALL),
+    Direc.L: (_ALL, 0)
+}
+
 
 def generate_slice(direction) -> TupleSlice:
-    all_ = slice(None, None)
-    if direction == Direc.U:
-        return 0, all_
-    elif direction == Direc.R:
-        return all_, -1
-    elif direction == Direc.D:
-        return -1, all_
-    elif direction == Direc.L:
-        return all_, 0
-    return all_, all_
+    return _DICT_TUPLE_SLICES.get(direction, (_ALL, _ALL))
 
 
 class Face:
@@ -30,9 +30,7 @@ class Face:
         self.shape: Tuple[int, int] = shape
 
         # Central Face
-        matrix = np.ones(self.shape, dtype=object)
-        matrix[:, :] = self.color
-        self.central_face: np.ndarray[Color] = matrix
+        self.central_face: np.ndarray[Color] = np.tile(self.color, self.shape)
 
         # Faces
         self.up: Face | None = None
@@ -51,10 +49,10 @@ class Face:
         return [self.up, self.right, self.down, self.left]
 
     @property
-    def pieces(self):
+    def pieces(self) -> np.ndarray[np.ndarray]:
         u_s, r_s, d_s, l_s = self._slice_list
         to_return: List[np.ndarray] = [self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s]]
-        return [arr.copy() for arr in to_return]
+        return np.array([arr.copy() for arr in to_return], dtype=object)
 
     @pieces.setter
     def pieces(self, to_set):
@@ -62,7 +60,7 @@ class Face:
         self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s] = to_set
 
     def __repr__(self):
-        return self.central_face.__repr__()
+        return self.central_face.__str__()
 
     def add_faces(self, up_tuple, right_tuple, down_tuple, left_tuple):
         # TODO: Agregar algo para que valide que las caras realmente se ajusten? onda que
