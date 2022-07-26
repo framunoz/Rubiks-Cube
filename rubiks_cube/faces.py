@@ -59,8 +59,14 @@ class Face:
         u_s, r_s, d_s, l_s = self._slice_list
         self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s] = to_set
 
+    def repr_central_face(self, space: int = 0) -> str:
+        str_to_return = ""
+        for row in self.central_face:
+            str_to_return += " " * space + " ".join([repr(e) for e in row]) + "\n"
+        return str_to_return[:-1]
+
     def __repr__(self):
-        return self.central_face.__str__()
+        return self.repr_central_face()
 
     def add_faces(self, up_tuple, right_tuple, down_tuple, left_tuple):
         # TODO: Agregar algo para que valide que las caras realmente se ajusten? onda que
