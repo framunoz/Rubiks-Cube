@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections import deque
 from typing import Tuple, List, Union
 
 import numpy as np
@@ -49,10 +50,10 @@ class Face:
         return [self.up, self.right, self.down, self.left]
 
     @property
-    def pieces(self) -> np.ndarray[np.ndarray]:
+    def pieces(self):
         u_s, r_s, d_s, l_s = self._slice_list
         to_return: List[np.ndarray] = [self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s]]
-        return np.array([arr.copy() for arr in to_return], dtype=object)
+        return [list(arr) for arr in to_return]
 
     @pieces.setter
     def pieces(self, to_set):
@@ -78,5 +79,7 @@ class Face:
     def rotate(self, times: int):
         times = times % 4
         # TODO: Agregar validadores para chequear que el movimiento se puede hacer (?)
-        self.pieces = np.roll(self.pieces, times)
+        roll = deque(self.pieces)
+        roll.rotate(times)
+        self.pieces = roll
         self.central_face = np.rot90(self.central_face, times)
