@@ -18,7 +18,7 @@ class RubikCube:
         height, width, length = self.dims = dims
 
         # Set of permitted movements
-        self.permitted_movements = permitted_movements or CubeMove
+        self.permitted_movements: set[CubeMove] = permitted_movements or {m for m in CubeMove}
 
         # Different Faces
         self.front = front = Face(Color.RED, (height, width))
@@ -77,6 +77,7 @@ class RubikCube:
 def main():
     rc = RubikCube((3, 2, 1), {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2})
     print(rc, end="\n\n")
+    rc.make_a_move(CubeMove.U2)
     rc.make_a_move(CubeMove.R2)
     print(rc)
 
