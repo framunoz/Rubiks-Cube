@@ -1,13 +1,24 @@
 from typing import Tuple
 
 from rubiks_cube.faces import Face
+from rubiks_cube.movements import Movement
 from rubiks_cube.utils import Color
 
 
+class NotPermittedMovementError(Exception):
+    """
+    Custom error in the cases of a user make a wrong movement.
+    """
+    pass
+
+
 class RubikCube:
-    def __init__(self, dims: Tuple[int, int, int]):
+    def __init__(self, dims: Tuple[int, int, int], permitted_movements: set[Movement] = None):
         # Dimensions
         height, width, length = self.dims = dims
+
+        # Set of permitted movements
+        self.permitted_movements = permitted_movements or Movement
 
         # Different Faces
         front = Face(Color.RED, (height, width))
@@ -72,9 +83,17 @@ class RubikCube:
         str_to_return += self.down.repr_central_face(2 * length + 1)
         return str_to_return
 
+    def make_a_move(self, move: Movement):
+        if move not in self.permitted_movements:
+            raise NotPermittedMovementError(
+                f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
+        move.move_the_cube(self)
+
 
 def main():
-    rc = RubikCube((3, 2, 1))
+    rc = RubikCube((3, 2, 1), {Movement.R2, Movement.L2, Movement.U2, Movement.D2})
+    print(rc, end="\n\n")
+    rc.make_a_move(Movement.R2)
     print(rc)
 
 
