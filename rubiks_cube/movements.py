@@ -4,7 +4,7 @@ from enum import Enum
 from rubiks_cube.faces import Face
 
 
-class CubeMove(abc.ABC):
+class BaseMove(abc.ABC):
     def __init__(self, times: int = 1):
         self.times = times
 
@@ -16,7 +16,7 @@ class CubeMove(abc.ABC):
         self.face(cube).rotate(self.times)
 
 
-class R(CubeMove):
+class R(BaseMove):
     def face(self, cube) -> Face:
         return cube.right
 
@@ -26,7 +26,7 @@ class R2(R):
         super().__init__(2)
 
 
-class L(CubeMove):
+class L(BaseMove):
     def face(self, cube) -> Face:
         return cube.left
 
@@ -36,7 +36,7 @@ class L2(L):
         super().__init__(2)
 
 
-class U(CubeMove):
+class U(BaseMove):
     def face(self, cube) -> Face:
         return cube.up
 
@@ -46,7 +46,7 @@ class U2(U):
         super().__init__(2)
 
 
-class D(CubeMove):
+class D(BaseMove):
     def face(self, cube) -> Face:
         return cube.down
 
@@ -56,7 +56,7 @@ class D2(D):
         super().__init__(2)
 
 
-class Movement(Enum):
+class CubeMove(Enum):
     R = R()
     R2 = R2()
     L = L()
