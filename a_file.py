@@ -1,5 +1,5 @@
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.faces import Face
+from rubiks_cube.faces import Face, rotate_pieces
 from rubiks_cube.movements import CubeMove
 from rubiks_cube.utils import Color
 
@@ -16,8 +16,12 @@ def main():
     rc.make_a_move(CubeMove.U2)
     print(rc.right)
     rc.make_a_move(CubeMove.R2)
-    # print(rc)
-    print(rc.right)
+    print(rc, end="\n\n")
+    print(rc.right, end="\n\n")
+
+    # pieces = rc.right.pieces
+    # print(pieces)
+    # print(rotate_pieces(pieces, 2))
 
 
 if __name__ == '__main__':

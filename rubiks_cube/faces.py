@@ -25,6 +25,22 @@ def generate_slice(direction) -> TupleSlice:
     return _DICT_TUPLE_SLICES.get(direction, (_ALL, _ALL))
 
 
+def invert_piece(piece, direction) -> List[Color]:
+    if direction < 0:
+        return list(reversed(piece))
+    return piece
+
+
+def rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
+    even, odd = [1, 1, -1, -1], [1, -1, -1, 1]
+    list_of_directions = [even, odd, even, odd]
+    new_list_of_pieces = deque()
+    for piece, directions in zip(list_of_pieces, list_of_directions):
+        new_list_of_pieces.append(invert_piece(piece, directions[times]))
+    new_list_of_pieces.rotate(times)
+    return new_list_of_pieces
+
+
 class Face:
     def __init__(self, color: Color | str, shape: Tuple[int, int]):
         self.color: Color = Color(color)
@@ -92,7 +108,7 @@ class Face:
     def rotate(self, times: int):
         times = times % 4
         # TODO: Agregar validadores para chequear que el movimiento se puede hacer (?)
-        roll = deque(self.pieces)
-        roll.rotate(times)
-        self.pieces = roll
+        # roll = deque(self.pieces)
+        # roll.rotate(times)
+        self.pieces = rotate_pieces(self.pieces, times)
         self.central_face = np.rot90(self.central_face, times)
