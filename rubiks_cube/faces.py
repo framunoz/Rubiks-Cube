@@ -39,6 +39,7 @@ class Face:
         self.down: Face | None = None
         self.left: Face | None = None
 
+        self._direc_list: List[Direc] | None = None
         self._slice_list: List[TupleSlice] | None = None
 
     @property
@@ -67,14 +68,26 @@ class Face:
         return str_to_return[:-1]
 
     def __repr__(self):
-        return self.repr_central_face()
+        if None in self.faces:
+            return self.repr_central_face()
+        def color_to_str(list_of_colors: List[Color]):
+            return [repr(c) for c in list_of_colors]
+        p_up, p_right, p_down, p_left = [color_to_str(loc) for loc in self.pieces]
+        str_to_return = "   "
+        str_to_return += " ".join(p_up) + "\n\n"
+        central_face_list = self.repr_central_face().split("\n")
+        for left, central, right in zip(p_left, central_face_list, p_right):
+            str_to_return += f"{left}  {central}  {right}\n"
+        str_to_return += "\n   " + " ".join(p_down)
+        return str_to_return
 
     def add_faces(self, up_tuple, right_tuple, down_tuple, left_tuple):
         # TODO: Agregar algo para que valide que las caras realmente se ajusten? onda que
         #  si la cara central es de (2, 2) que el de la izquierda sea de (2, 100) y no de (100, 100).
         (up, up_d), (right, right_d), (down, down_d), (left, left_d) = up_tuple, right_tuple, down_tuple, left_tuple
         self.up, self.right, self.down, self.left = up, right, down, left
-        self._slice_list = [generate_slice(Direc(s)) for s in [up_d, right_d, down_d, left_d]]
+        self._direc_list = [Direc(s) for s in [up_d, right_d, down_d, left_d]]
+        self._slice_list = [generate_slice(d) for d in self._direc_list]
 
     def rotate(self, times: int):
         times = times % 4
