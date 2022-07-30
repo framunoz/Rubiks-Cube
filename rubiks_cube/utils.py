@@ -1,5 +1,9 @@
 from enum import Enum
-from typing import Dict
+from typing import Dict, Union, Tuple
+
+# Personal Typing.
+Slice = Union[slice, int]
+TupleSlice = Tuple[Slice, Slice]
 
 # Dictionary to change the color of the text
 _COLORS: Dict[str, str] = {
@@ -33,6 +37,16 @@ class Color(Enum):
         }.get(self.value, 0)
 
 
+# Slice to indicate that the entire row/column will be obtained.
+_ALL: Slice = slice(None, None)
+
+# Dictionary of different slices for the arrays.
+_DICT_TUPLE_SLICES: dict[int, TupleSlice] = {
+    0: (0, _ALL), 1: (_ALL, -1),
+    2: (-1, _ALL), 3: (_ALL, 0)
+}
+
+
 class Direction(Enum):
     """
     Enumerator to indicate which direction a face is adjacent to another face.
@@ -41,3 +55,6 @@ class Direction(Enum):
     R = 1
     D = 2
     L = 3
+
+    def generate_slice(self) -> TupleSlice:
+        return _DICT_TUPLE_SLICES.get(self.value, (_ALL, _ALL))

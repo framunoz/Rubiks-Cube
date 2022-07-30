@@ -1,27 +1,12 @@
 from __future__ import annotations
 
 from collections import deque
-from typing import Tuple, List, Union
+from typing import Tuple, List
 
 import numpy as np
 
-from rubiks_cube.utils import Color
+from rubiks_cube.utils import Color, TupleSlice
 from rubiks_cube.utils import Direction as Direc
-
-# Personal Typing.
-Slice = Union[slice, int]
-TupleSlice = Tuple[Slice, Slice]
-
-# Slice to indicate that the entire row/column will be obtained.
-_ALL: Slice = slice(None, None)
-
-# Dictionary of different slices for the arrays.
-_DICT_TUPLE_SLICES: dict[Direc, TupleSlice] = {
-    Direc.U: (0, _ALL),
-    Direc.R: (_ALL, -1),
-    Direc.D: (-1, _ALL),
-    Direc.L: (_ALL, 0)
-}
 
 # Directions that indicates whether or not a "piece" should be inverted.
 _LIST_DIRECTIONS_TO_INV = [
@@ -30,30 +15,25 @@ _LIST_DIRECTIONS_TO_INV = [
 ]
 
 
-def generate_slice(direction: Direc | int) -> TupleSlice:
-    """Function that returns the desired slice given a direction."""
-    return _DICT_TUPLE_SLICES.get(Direc(direction), (_ALL, _ALL))
-
-    
-def color_to_str(list_of_colors: List[Color]) -> List[str]:
+def _color_to_str(list_of_colors: List[Color]) -> List[str]:
     """Function that maps the list of colors into a list of strings."""
     return [repr(c) for c in list_of_colors]
 
 
-def invert_piece(piece, direction=-1) -> List[Color]:
+def _invert_piece(piece, direction=-1) -> List[Color]:
     """Function that invert a piece if the 'direction' is negative. Otherwise, it returns the same list."""
     if direction < 0:
         return list(reversed(piece))
     return piece
 
 
-def rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
+def _rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
     """Function that rotates the given list of pieces depending the parameter 'times'."""
     even, odd = [1, 1, -1, -1], [1, -1, -1, 1]
     list_of_directions = [even, odd, even, odd]
     new_list_of_pieces = deque()
     for piece, directions in zip(list_of_pieces, list_of_directions):
-        new_list_of_pieces.append(invert_piece(piece, directions[times]))
+        new_list_of_pieces.append(_invert_piece(piece, directions[times]))
     new_list_of_pieces.rotate(times)
     return list(new_list_of_pieces)
 
@@ -98,7 +78,7 @@ class Face:
         to_return: List[List[Color]] = [list(elem) for elem in list_of_pieces]
         for i, dir_set in enumerate(_LIST_DIRECTIONS_TO_INV):
             if self._direc_list[i] in dir_set:
-                to_return[i] = invert_piece(to_return[i])
+                to_return[i] = _invert_piece(to_return[i])
         return to_return
 
     @property
@@ -125,7 +105,7 @@ class Face:
         if None in self.faces:
             return self.repr_central_face()
         # Pieces as string
-        p_up, p_right, p_down, p_left = [color_to_str(loc) for loc in self.pieces]
+        p_up, p_right, p_down, p_left = [_color_to_str(loc) for loc in self.pieces]
         # Up
         str_to_return = "   "
         str_to_return += " ".join(p_up) + "\n\n"
@@ -143,12 +123,12 @@ class Face:
         #  si la cara central es de (2, 2) que el de la izquierda sea de (2, 100) y no de (100, 100).
         (up, up_d), (right, right_d), (down, down_d), (left, left_d) = up_tuple, right_tuple, down_tuple, left_tuple
         self.up, self.right, self.down, self.left = up, right, down, left
-        self._direc_list = [Direc(s) for s in [up_d, right_d, down_d, left_d]]
-        self._slice_list = [generate_slice(d) for d in self._direc_list]
+        self._direc_list: List[Direc] = [Direc(s) for s in [up_d, right_d, down_d, left_d]]
+        self._slice_list: List[TupleSlice] = [d.generate_slice() for d in self._direc_list]
 
     def rotate(self, times: int):
         """Rotate the face at the desired times."""
         times = times % 4
         # TODO: Agregar validadores para chequear que el movimiento se puede hacer (?)
-        self.pieces = rotate_pieces(self.pieces, times)
-        self.central_face = np.rot90(self.central_face, 4-times)
+        self.pieces = _rotate_pieces(self.pieces, times)
+        self.central_face = np.rot90(self.central_face, 4 - times)

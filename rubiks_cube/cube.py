@@ -6,6 +6,9 @@ from rubiks_cube.faces import Face
 from rubiks_cube.movements import CubeMove
 from rubiks_cube.utils import Color, Direction
 
+# Directions
+_U, _R, _D, _L = Direction.U, Direction.R, Direction.D, Direction.L
+
 
 class NotPermittedMovementError(Exception):
     """
@@ -30,22 +33,19 @@ class RubikCube:
         self.up: Face = up
         self.down: Face = down
 
-        # Directions
-        U, R, D, L = Direction.U, Direction.R, Direction.D, Direction.L
-
         # Attach every face with its correspondent faces
         front.add_faces(
-            up_tuple=(up, D), right_tuple=(right, L), down_tuple=(down, U), left_tuple=(left, R))
+            up_tuple=(up, _D), right_tuple=(right, _L), down_tuple=(down, _U), left_tuple=(left, _R))
         back.add_faces(
-            up_tuple=(up, U), right_tuple=(left, L), down_tuple=(down, D), left_tuple=(right, R))
+            up_tuple=(up, _U), right_tuple=(left, _L), down_tuple=(down, _D), left_tuple=(right, _R))
         left.add_faces(
-            up_tuple=(up, L), right_tuple=(front, L), down_tuple=(down, L), left_tuple=(back, R))
+            up_tuple=(up, _L), right_tuple=(front, _L), down_tuple=(down, _L), left_tuple=(back, _R))
         right.add_faces(
-            up_tuple=(up, R), right_tuple=(back, L), down_tuple=(down, R), left_tuple=(front, R))
+            up_tuple=(up, _R), right_tuple=(back, _L), down_tuple=(down, _R), left_tuple=(front, _R))
         up.add_faces(
-            up_tuple=(back, U), right_tuple=(right, U), down_tuple=(front, U), left_tuple=(left, U))
+            up_tuple=(back, _U), right_tuple=(right, _U), down_tuple=(front, _U), left_tuple=(left, _U))
         down.add_faces(
-            up_tuple=(front, D), right_tuple=(right, D), down_tuple=(back, D), left_tuple=(left, D))
+            up_tuple=(front, _D), right_tuple=(right, _D), down_tuple=(back, _D), left_tuple=(left, _D))
 
         # Set of permitted movements
         self.permitted_movements: set[CubeMove] = permitted_movements or {m for m in CubeMove}
