@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Tuple
 
 from rubiks_cube.faces import Face
@@ -13,20 +15,18 @@ class NotPermittedMovementError(Exception):
 
 
 class RubikCube:
-    def __init__(self, dims: Tuple[int, int, int], permitted_movements: set[CubeMove] = None):
-        # Dimensions
-        height, width, length = self.dims = dims
+    """Class that represents a Rubik's Cube."""
 
-        # Set of permitted movements
-        self.permitted_movements: set[CubeMove] = permitted_movements or {m for m in CubeMove}
-
+    def __init__(self, front: Face, back: Face, left: Face, right: Face, up: Face, down: Face,
+                 permitted_movements: set[CubeMove] = None):
+        # TODO: Podría ser util tener un validador para determinar si las caras coinciden en las dimensiones.
         # Different Faces
-        self.front = front = Face(Color.RED, (height, width))
-        self.back = back = Face(Color.ORANGE, (height, width))
-        self.left = left = Face(Color.GREEN, (height, length))
-        self.right = right = Face(Color.BLUE, (height, length))
-        self.up = up = Face(Color.WHITE, (length, width))
-        self.down = down = Face(Color.YELLOW, (length, width))
+        self.front: Face = front 
+        self.back: Face = back 
+        self.left: Face = left 
+        self.right: Face = right 
+        self.up: Face = up
+        self.down: Face = down
 
         # Attach every face
         front.add_faces(
@@ -42,12 +42,31 @@ class RubikCube:
         down.add_faces(
             up_tuple=(front, 2), right_tuple=(right, 2), down_tuple=(back, 2), left_tuple=(left, 2))
 
+        # Set of permitted movements
+        self.permitted_movements: set[CubeMove] = permitted_movements or {m for m in CubeMove}
+        
+        # Dimensions
+        self.dims = self.front.shape[0], self.front.shape[1], self.right.shape[1]
+
+    @classmethod
+    def from_dims(cls, dims: Tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> RubikCube:
+        """Factory method that generates a RubikCube instance given the dimensions and permitted movements."""
+        height, width, length = dims# Different Faces
+        cls_to_return = cls(
+            front=Face.from_color(Color.RED, (height, width)), back=Face.from_color(Color.ORANGE, (height, width)),
+            left=Face.from_color(Color.GREEN, (height, length)), right=Face.from_color(Color.BLUE, (height, length)),
+            up=Face.from_color(Color.WHITE, (length, width)), down=Face.from_color(Color.YELLOW, (length, width)),
+            permitted_movements=permitted_movements,
+        )
+        return cls_to_return
+
     @property
     def faces(self):
+        """Iterates over every face in the current cube."""
         return [self.up, self.left, self.front, self.right, self.back, self.down]
 
     def __repr__(self):
-        height, width, length = self.dims
+        _, _, length = self.dims
 
         # Up face
         str_to_return = ""
@@ -68,19 +87,8 @@ class RubikCube:
         return str_to_return
 
     def make_a_move(self, move: CubeMove):
+        """Make a move in the current cube."""
         if move not in self.permitted_movements:
             raise NotPermittedMovementError(
                 f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
         move.move_the_cube(self)
-
-
-def main():
-    rc = RubikCube((3, 2, 1), {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2})
-    print(rc, end="\n\n")
-    rc.make_a_move(CubeMove.U2)
-    rc.make_a_move(CubeMove.R2)
-    print(rc)
-
-
-if __name__ == '__main__':
-    main()

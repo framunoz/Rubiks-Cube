@@ -1,12 +1,13 @@
 import enum
 
+# Dictionary to change the color of teh text
 _COLORS = {
-    "green": "\033[38;5;46m",
-    "red": "\033[38;5;1m",
-    "yellow": "\033[38;5;226m",
-    "orange": "\033[38;5;208m",
-    "blue": "\033[38;5;21m",
-    "white": "\033[38;5;252m"
+    "green": "\033[38;5;46m{}\033[0;0m",
+    "red": "\033[38;5;1m{}\033[0;0m",
+    "yellow": "\033[38;5;226m{}\033[0;0m",
+    "orange": "\033[38;5;208m{}\033[0;0m",
+    "blue": "\033[38;5;21m{}\033[0;0m",
+    "white": "\033[38;5;252m{}\033[0;0m"
 }
 
 
@@ -22,20 +23,14 @@ class Color(enum.Enum):
     WHITE = "white"
 
     def __repr__(self):
-        return f"{_COLORS[self.value]}{self.name[0]}\033[0;0m"
+        return _COLORS[self.value].format(self.name[0])
 
 
 class Direction(enum.Enum):
+    """
+    Enumerator to indicate wich direction a face is adjacent to another face.
+    """
     U = 0
     R = 1
     D = 2
     L = 3
-
-
-def main():
-    for c in Color:
-        print(repr(c))
-
-
-if __name__ == '__main__':
-    main()

@@ -5,7 +5,7 @@ from rubiks_cube.movements import CubeMove
 def main():
     # f = Face(Color.BLUE, (2, 2))
 
-    rc = RubikCube(
+    rc = RubikCube.from_dims(
         (3, 3, 3), 
         # {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2}
     )
@@ -19,6 +19,8 @@ def main():
     print("Faces")
     for f in rc.faces:
         print(f, end="\n\n")
+
+    print(CubeMove.R)
 
     # pieces = rc.right.pieces
     # print(pieces)
