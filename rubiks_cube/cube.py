@@ -1,10 +1,10 @@
 from __future__ import annotations
 
-from typing import Tuple
+from typing import List, Tuple
 
 from rubiks_cube.faces import Face
 from rubiks_cube.movements import CubeMove
-from rubiks_cube.utils import Color
+from rubiks_cube.utils import Color, Direction
 
 
 class NotPermittedMovementError(Exception):
@@ -19,7 +19,9 @@ class RubikCube:
 
     def __init__(self, front: Face, back: Face, left: Face, right: Face, up: Face, down: Face,
                  permitted_movements: set[CubeMove] = None):
-        # TODO: Podría ser util tener un validador para determinar si las caras coinciden en las dimensiones.
+        # TODO: Podría ser util tener un validador para determinar si las caras coinciden 
+        #  en las dimensiones.
+
         # Different Faces
         self.front: Face = front 
         self.back: Face = back 
@@ -28,19 +30,22 @@ class RubikCube:
         self.up: Face = up
         self.down: Face = down
 
-        # Attach every face
+        # Directions
+        U, R, D, L = Direction.U, Direction.R, Direction.D, Direction.L
+
+        # Attach every face with its correspondent faces
         front.add_faces(
-            up_tuple=(up, 2), right_tuple=(right, 3), down_tuple=(down, 0), left_tuple=(left, 1))
+            up_tuple=(up, D), right_tuple=(right, L), down_tuple=(down, U), left_tuple=(left, R))
         back.add_faces(
-            up_tuple=(up, 0), right_tuple=(left, 3), down_tuple=(down, 2), left_tuple=(right, 1))
+            up_tuple=(up, U), right_tuple=(left, L), down_tuple=(down, D), left_tuple=(right, R))
         left.add_faces(
-            up_tuple=(up, 3), right_tuple=(front, 3), down_tuple=(down, 3), left_tuple=(back, 1))
+            up_tuple=(up, L), right_tuple=(front, L), down_tuple=(down, L), left_tuple=(back, R))
         right.add_faces(
-            up_tuple=(up, 1), right_tuple=(back, 3), down_tuple=(down, 1), left_tuple=(front, 1))
+            up_tuple=(up, R), right_tuple=(back, L), down_tuple=(down, R), left_tuple=(front, R))
         up.add_faces(
-            up_tuple=(back, 0), right_tuple=(right, 0), down_tuple=(front, 0), left_tuple=(left, 0))
+            up_tuple=(back, U), right_tuple=(right, U), down_tuple=(front, U), left_tuple=(left, U))
         down.add_faces(
-            up_tuple=(front, 2), right_tuple=(right, 2), down_tuple=(back, 2), left_tuple=(left, 2))
+            up_tuple=(front, D), right_tuple=(right, D), down_tuple=(back, D), left_tuple=(left, D))
 
         # Set of permitted movements
         self.permitted_movements: set[CubeMove] = permitted_movements or {m for m in CubeMove}
@@ -51,7 +56,7 @@ class RubikCube:
     @classmethod
     def from_dims(cls, dims: Tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> RubikCube:
         """Factory method that generates a RubikCube instance given the dimensions and permitted movements."""
-        height, width, length = dims# Different Faces
+        height, width, length = dims
         cls_to_return = cls(
             front=Face.from_color(Color.RED, (height, width)), back=Face.from_color(Color.ORANGE, (height, width)),
             left=Face.from_color(Color.GREEN, (height, length)), right=Face.from_color(Color.BLUE, (height, length)),
@@ -77,8 +82,8 @@ class RubikCube:
         front_list = self.front.repr_central_face().split("\n")
         right_list = self.right.repr_central_face().split("\n")
         back_list = self.back.repr_central_face().split("\n")
-        for le, f, r, b in zip(left_list, front_list, right_list, back_list):
-            str_to_return += f"{le}  {f}  {r}  {b}\n"
+        for le, fr, ri, ba in zip(left_list, front_list, right_list, back_list):
+            str_to_return += f"{le}  {fr}  {ri}  {ba}\n"
         str_to_return += "\n"
 
         # Down face
@@ -92,3 +97,12 @@ class RubikCube:
             raise NotPermittedMovementError(
                 f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
         move.move_the_cube(self)
+
+    def make_movements_from_list(self, list_of_moves: List[CubeMove]):
+        """Make movements from a list of CubeMoves."""
+        for move in list_of_moves:
+            self.make_a_move(move)
+
+    def make_movements_from_str(self, str_of_moves: str):
+        """Make movements from a string, separated by commas."""
+        self.make_movements_from_list([CubeMove.from_str(m_str) for m_str in " ".split(str_of_moves)])

@@ -22,8 +22,14 @@ class Color(enum.Enum):
     BLUE = "blue"
     WHITE = "white"
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return _COLORS[self.value].format(self.name[0])
+
+    def __hash__(self) -> int:
+        return {
+            "green": 1, "red": 2, "yellow": 3,
+            "orange": 4, "blue": 5, "white": 6
+        }.get(self.value, 0)
 
 
 class Direction(enum.Enum):
