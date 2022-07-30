@@ -1,23 +1,28 @@
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.faces import Face
 from rubiks_cube.movements import CubeMove
-from rubiks_cube.utils import Color
 
 
 def main():
-    f = Face(Color.BLUE, (2, 2))
-    print(f)
-    print(None in f.faces)
+    # f = Face(Color.BLUE, (2, 2))
 
-    rc = RubikCube((3, 2, 1), {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2})
-    print(repr(rc.front))
-    print(None in rc.front.faces)
+    rc = RubikCube(
+        (3, 3, 3), 
+        # {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2}
+    )
     print(rc, end="\n\n")
-    rc.make_a_move(CubeMove.U2)
-    print(rc.right)
-    rc.make_a_move(CubeMove.R2)
-    # print(rc)
-    print(rc.right)
+    list_of_movements = [CubeMove.U, CubeMove.R, CubeMove.D, CubeMove.L, CubeMove.D, CubeMove.R, CubeMove.D, CubeMove.R]
+    for m in list_of_movements:
+        print(f"{m=}")
+        rc.make_a_move(m)
+        print(rc, end="\n\n")
+        # print(rc.right, end="\n\n")
+    print("Faces")
+    for f in rc.faces:
+        print(f, end="\n\n")
+
+    # pieces = rc.right.pieces
+    # print(pieces)
+    # print(rotate_pieces(pieces, 2))
 
 
 if __name__ == '__main__':

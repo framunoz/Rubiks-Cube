@@ -21,8 +21,34 @@ _DICT_TUPLE_SLICES: dict[Direc, TupleSlice] = {
 }
 
 
+_LIST_DIRECTIONS_TO_INV = [
+    {Direc.U, Direc.R}, {Direc.U},
+    {Direc.D, Direc.L}, {Direc.D}
+]
+
+
 def generate_slice(direction) -> TupleSlice:
     return _DICT_TUPLE_SLICES.get(direction, (_ALL, _ALL))
+
+    
+def color_to_str(list_of_colors: List[Color]) -> List[str]:
+    return [repr(c) for c in list_of_colors]
+
+
+def invert_piece(piece, direction=-1) -> List[Color]:
+    if direction < 0:
+        return list(reversed(piece))
+    return piece
+
+
+def rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
+    even, odd = [1, 1, -1, -1], [1, -1, -1, 1]
+    list_of_directions = [even, odd, even, odd]
+    new_list_of_pieces = deque()
+    for piece, directions in zip(list_of_pieces, list_of_directions):
+        new_list_of_pieces.append(invert_piece(piece, directions[times]))
+    new_list_of_pieces.rotate(times)
+    return new_list_of_pieces
 
 
 class Face:
@@ -42,24 +68,32 @@ class Face:
         self._direc_list: List[Direc] | None = None
         self._slice_list: List[TupleSlice] | None = None
 
-    @property
-    def cf(self) -> np.ndarray[Color]:
-        return self.central_face
+    def __getitem__(self, index) -> np.ndarray[Color]:
+        return self.central_face.__getitem__(index)
+
+    def __setitem__(self, index, item):
+        self.central_face[index] = item
 
     @property
     def faces(self) -> List[Face]:
         return [self.up, self.right, self.down, self.left]
 
+    def _invert_pieces(self, list_of_pieces) -> List[List[Color]]:
+        to_return: List[List[Color]] = [list(elem) for elem in list_of_pieces]
+        for i, dir_set in enumerate(_LIST_DIRECTIONS_TO_INV):
+            if self._direc_list[i] in dir_set:
+                to_return[i] = invert_piece(to_return[i])
+        return to_return
+
     @property
-    def pieces(self):
+    def pieces(self) -> List[List[Color]]:
         u_s, r_s, d_s, l_s = self._slice_list
-        to_return: List[np.ndarray] = [self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s]]
-        return [list(arr) for arr in to_return]
+        return self._invert_pieces([self.up[u_s], self.right[r_s], self.down[d_s], self.left[l_s]])
 
     @pieces.setter
-    def pieces(self, to_set):
+    def pieces(self, value_to_set):
         u_s, r_s, d_s, l_s = self._slice_list
-        self.up.cf[u_s], self.right.cf[r_s], self.down.cf[d_s], self.left.cf[l_s] = to_set
+        self.up[u_s], self.right[r_s], self.down[d_s], self.left[l_s] = self._invert_pieces(value_to_set)
 
     def repr_central_face(self, space: int = 0) -> str:
         str_to_return = ""
@@ -70,8 +104,7 @@ class Face:
     def __repr__(self):
         if None in self.faces:
             return self.repr_central_face()
-        def color_to_str(list_of_colors: List[Color]):
-            return [repr(c) for c in list_of_colors]
+
         p_up, p_right, p_down, p_left = [color_to_str(loc) for loc in self.pieces]
         str_to_return = "   "
         str_to_return += " ".join(p_up) + "\n\n"
@@ -92,7 +125,5 @@ class Face:
     def rotate(self, times: int):
         times = times % 4
         # TODO: Agregar validadores para chequear que el movimiento se puede hacer (?)
-        roll = deque(self.pieces)
-        roll.rotate(times)
-        self.pieces = roll
-        self.central_face = np.rot90(self.central_face, times)
+        self.pieces = rotate_pieces(self.pieces, times)
+        self.central_face = np.rot90(self.central_face, 4-times)
