@@ -1,7 +1,8 @@
-import enum
+from enum import Enum
+from typing import Dict
 
-# Dictionary to change the color of teh text
-_COLORS = {
+# Dictionary to change the color of the text
+_COLORS: Dict[str, str] = {
     "green": "\033[38;5;46m{}\033[0;0m",
     "red": "\033[38;5;1m{}\033[0;0m",
     "yellow": "\033[38;5;226m{}\033[0;0m",
@@ -11,7 +12,7 @@ _COLORS = {
 }
 
 
-class Color(enum.Enum):
+class Color(Enum):
     """
     Enumerator for the colors of the faces of a Rubik's cube.
     """
@@ -32,9 +33,9 @@ class Color(enum.Enum):
         }.get(self.value, 0)
 
 
-class Direction(enum.Enum):
+class Direction(Enum):
     """
-    Enumerator to indicate wich direction a face is adjacent to another face.
+    Enumerator to indicate which direction a face is adjacent to another face.
     """
     U = 0
     R = 1

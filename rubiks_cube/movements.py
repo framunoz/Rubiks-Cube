@@ -7,7 +7,7 @@ from typing import Optional
 from rubiks_cube.faces import Face
 
 
-# TODO: Agregar el resto de movimientos, como también sus transofrmaciones inversas.
+# TODO: Agregar el resto de movimientos, como también sus transformaciones inversas.
 class BaseMove(abc.ABC):
     """Abstract clase for every movement."""
     def __init__(self, times: int = 1):
@@ -16,7 +16,7 @@ class BaseMove(abc.ABC):
 
     @abc.abstractmethod
     def face(self, cube) -> Face:
-        """To use template pattern. It is the face that makes a rotation."""
+        """To use template pattern. It is the face that is rotated."""
         pass
 
     def move_the_cube(self, cube):

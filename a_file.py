@@ -20,7 +20,7 @@ def main():
         CubeMove.D2, CubeMove.R2, CubeMove.D2, CubeMove.R2
     ]
     for m in list_of_movements:
-        print(f"{m=}")
+        print(f"{m = }")
         rc.make_a_move(m)
         print(rc, end="\n\n")
 

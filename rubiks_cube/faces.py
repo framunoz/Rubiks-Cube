@@ -23,7 +23,7 @@ _DICT_TUPLE_SLICES: dict[Direc, TupleSlice] = {
     Direc.L: (_ALL, 0)
 }
 
-# Directions that indicates wheter or not a "piece" should be inversed.
+# Directions that indicates whether or not a "piece" should be inverted.
 _LIST_DIRECTIONS_TO_INV = [
     {Direc.U, Direc.R}, {Direc.U},
     {Direc.D, Direc.L}, {Direc.D}
@@ -81,7 +81,6 @@ class Face:
     def from_color(cls, color: Color | str, shape: Tuple[int, int]) -> Face:
         """Factory method that creates a Face given a color and a shape."""
         return cls(np.tile(Color(color), shape))
-        
 
     def __getitem__(self, index) -> np.ndarray[Color]:
         return self.central_face.__getitem__(index)
@@ -91,7 +90,7 @@ class Face:
 
     @property
     def faces(self) -> List[Face]:
-        """Iterates over the other faces adjecent tp the current face."""
+        """Iterates over the other faces adjacent tp the current face."""
         return [self.up, self.right, self.down, self.left]
 
     def _invert_pieces(self, list_of_pieces) -> List[List[Color]]:
@@ -122,7 +121,7 @@ class Face:
         return str_to_return[:-1]
 
     def __repr__(self):
-        # In the case that the other faces are not setted.
+        # In the case that the other faces are not set.
         if None in self.faces:
             return self.repr_central_face()
         # Pieces as string
