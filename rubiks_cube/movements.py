@@ -96,9 +96,4 @@ class CubeMove(Enum):
     @classmethod
     def from_str(cls, move_as_str: str) -> Optional[CubeMove]:
         """Returns a CubeMove given a string that represents it."""
-        return {
-            "R": cls.R, "R2": cls.R2,
-            "L": cls.L, "L2": cls.L2,
-            "U": cls.U, "U2": cls.U2,
-            "D": cls.D, "D2": cls.D2,
-        }.get(move_as_str, None)
+        return {m.name: getattr(cls, m.name) for m in cls}.get(move_as_str, None)

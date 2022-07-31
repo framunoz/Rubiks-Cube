@@ -37,6 +37,10 @@ class Color(Enum):
         }.get(self.value, 0)
 
 
+G, R, Y, O, B, W = Color.GREEN, Color.RED, Color.YELLOW, Color.ORANGE, Color.BLUE, Color.WHITE
+
+Gc, Rc, Yc, Oc, Bc, Wc = repr(G), repr(R), repr(Y), repr(O), repr(B), repr(W)
+
 # Slice to indicate that the entire row/column will be obtained.
 _ALL: Slice = slice(None, None)
 

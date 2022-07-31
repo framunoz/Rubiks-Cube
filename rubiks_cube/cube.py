@@ -20,16 +20,16 @@ class NotPermittedMovementError(Exception):
 class RubikCube:
     """Class that represents a Rubik's Cube."""
 
-    def __init__(self, front: Face, back: Face, left: Face, right: Face, up: Face, down: Face,
+    def __init__(self, up: Face, left: Face, front: Face, right: Face, back: Face, down: Face,
                  permitted_movements: set[CubeMove] = None):
         # TODO: Podría ser util tener un validador para determinar si las caras coinciden 
         #  en las dimensiones.
 
         # Different Faces
-        self.front: Face = front 
-        self.back: Face = back 
-        self.left: Face = left 
-        self.right: Face = right 
+        self.front: Face = front
+        self.back: Face = back
+        self.left: Face = left
+        self.right: Face = right
         self.up: Face = up
         self.down: Face = down
 
@@ -70,6 +70,11 @@ class RubikCube:
         """Iterates over every face in the current cube."""
         return [self.up, self.left, self.front, self.right, self.back, self.down]
 
+    def __eq__(self, other):
+        if isinstance(other, RubikCube):
+            return self.faces == other.faces
+        return False
+
     def __repr__(self):
         _, _, length = self.dims
 
@@ -104,5 +109,7 @@ class RubikCube:
             self.make_a_move(move)
 
     def make_movements_from_str(self, str_of_moves: str):
-        """Make movements from a string, separated by commas."""
-        self.make_movements_from_list([CubeMove.from_str(m_str) for m_str in " ".split(str_of_moves)])
+        """Make movements from a string, separated by spaces."""
+        list_of_str = str_of_moves.split()
+        list_of_moves = [CubeMove.from_str(m_str) for m_str in list_of_str]
+        self.make_movements_from_list(list_of_moves)

@@ -41,10 +41,10 @@ def _rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
 class Face:
     """Class that represents a face of the Rubik's Cube."""
 
-    def __init__(self, central_face: np.ndarray[Color]):
+    def __init__(self, central_face: np.ndarray[Color] | List[List[Color]]):
         # Central Face
-        self.central_face: np.ndarray[Color] = central_face
-        
+        self.central_face: np.ndarray[Color] = np.asarray(central_face)
+
         # Shape
         self.shape: Tuple[int, int] = self.central_face.shape
 
@@ -67,6 +67,11 @@ class Face:
 
     def __setitem__(self, index, item):
         self.central_face[index] = item
+
+    def __eq__(self, other):
+        if isinstance(other, Face):
+            return (self.central_face == other.central_face).all()
+        return self.central_face == other
 
     @property
     def faces(self) -> List[Face]:
@@ -102,8 +107,9 @@ class Face:
 
     def __repr__(self):
         # In the case that the other faces are not set.
-        if None in self.faces:
-            return self.repr_central_face()
+        for f in self.faces:
+            if f is None:
+                return self.repr_central_face()
         # Pieces as string
         p_up, p_right, p_down, p_left = [_color_to_str(loc) for loc in self.pieces]
         # Up
