@@ -7,10 +7,12 @@ def main():
     # f = Face(Color.BLUE, (2, 2))
 
     rc = RubikCube.from_dims(
-        (3, 2, 1), 
+        (3, 2, 1),
         {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2}
     )
     print(rc, end="\n\n")
+    rc.make_movements_from_str("L2 U2")
+    print("\n", rc, "\n", sep="")
     # list_of_movements = [
     #     CubeMove.U, CubeMove.R, CubeMove.D, CubeMove.L,
     #     CubeMove.D, CubeMove.R, CubeMove.D, CubeMove.R

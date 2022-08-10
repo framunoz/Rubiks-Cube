@@ -8,7 +8,7 @@ import numpy as np
 from rubiks_cube.utils import Color, TupleSlice
 from rubiks_cube.utils import Direction as Direc
 
-# Directions that indicates whether or not a "piece" should be inverted.
+# Directions that indicates whether a "piece" should be inverted.
 _LIST_DIRECTIONS_TO_INV = [
     {Direc.U, Direc.R}, {Direc.U},
     {Direc.D, Direc.L}, {Direc.D}
@@ -28,7 +28,7 @@ def _invert_piece(piece, direction=-1) -> List[Color]:
 
 
 def _rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
-    """Function that rotates the given list of pieces depending the parameter 'times'."""
+    """Function that rotates the given list of pieces depending on the parameter 'times'."""
     even, odd = [1, 1, -1, -1], [1, -1, -1, 1]
     list_of_directions = [even, odd, even, odd]
     new_list_of_pieces = deque()
@@ -99,7 +99,7 @@ class Face:
         self.up[u_s], self.right[r_s], self.down[d_s], self.left[l_s] = self._invert_pieces(value_to_set)
 
     def repr_central_face(self, space: int = 0) -> str:
-        """Returns a represent of the central face."""
+        """Returns a representation of the central face."""
         str_to_return = ""
         for row in self.central_face:
             str_to_return += " " * space + " ".join([repr(e) for e in row]) + "\n"
