@@ -16,7 +16,8 @@ class TestFace(TestBase):
         # Attach the faces into the central face
         self.central.add_faces((self.up, 1), (self.right, 3), (self.down, 1), (self.left, 1))
         # Other face to compare
-        self.face2 = Face.from_color(R, (3, 2))
+        self.face2: Face = Face.from_color(R, (3, 2))
+        self.face3: Face = Face.from_color(R, (3, 2))
 
     def test_instance_well_created(self):
         expected = np.array([
@@ -25,6 +26,14 @@ class TestFace(TestBase):
         np.testing.assert_array_equal(
             self.central.central_face, expected,
             "The face has not been created correctly.")
+
+    def test_hash(self):
+        self.assertEqual(
+            hash(self.face2), hash(self.face3),
+            "Two equals instances had different hash code.")
+        self.assertNotEqual(
+            hash(self.central), hash(self.face3),
+            "Two different instances had equals hash code.")
 
     def test_add_faces(self):
         self.assertEqual(

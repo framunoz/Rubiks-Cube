@@ -38,6 +38,10 @@ def _rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
     return list(new_list_of_pieces)
 
 
+def _as_tuple(arr: np.ndarray) -> tuple[tuple, ...]:
+    return tuple([tuple(row) for row in arr])
+
+
 class Face:
     """Class that represents a face of the Rubik's Cube."""
 
@@ -72,6 +76,9 @@ class Face:
         if isinstance(other, Face):
             return (self.central_face == other.central_face).all()
         return self.central_face == other
+
+    def __hash__(self):
+        return hash(_as_tuple(self.central_face))
 
     @property
     def faces(self) -> List[Face]:
