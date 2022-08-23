@@ -1,6 +1,9 @@
 from rubiks_cube.cube import RubikCube
+from rubiks_cube.graph import make_graph
 from rubiks_cube.movements import CubeMove
 from rubiks_cube.utils import Color
+
+CM = CubeMove
 
 
 def main():
@@ -36,5 +39,13 @@ def main():
     print(hash("blue"), hash("blue"))
 
 
+def other_main():
+    g = make_graph((3, 2, 1), {CM.L2, CM.R2, CM.U2, CM.D2})
+    for i, rc in enumerate(g.nodes):
+        print(f"{i = }")
+        print(rc)
+        print(g[rc])
+
+
 if __name__ == '__main__':
-    main()
+    other_main()
