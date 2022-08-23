@@ -86,14 +86,18 @@ class RubikCube:
         right = copy.copy(self.right)
         back = copy.copy(self.back)
         down = copy.copy(self.down)
-        # permitted_movements = copy.copy(self.permitted_movements)
+        permitted_movements = copy.copy(self.permitted_movements)
 
-        new = self.__class__(up, left, front, right, back, down, self.permitted_movements)
+        new = self.__class__(up, left, front, right, back, down, permitted_movements)
         new.__dict__.update(self.__dict__)
 
         return new
 
     def __deepcopy__(self, memo=None) -> RubikCube:
+        """
+        To use prototype pattern. It makes a deep copy of the current instance
+        :return:
+        """
         if memo is None:
             memo = {}
 
@@ -103,14 +107,18 @@ class RubikCube:
         right = copy.deepcopy(self.right, memo)
         back = copy.deepcopy(self.back, memo)
         down = copy.deepcopy(self.down, memo)
-        # permitted_movements = copy.deepcopy(self.permitted_movements, memo)
+        permitted_movements = copy.deepcopy(self.permitted_movements, memo)
 
-        new = self.__class__(up, left, front, right, back, down, self.permitted_movements)
+        new = self.__class__(up, left, front, right, back, down, permitted_movements)
         new.__dict__ = copy.deepcopy(self.__dict__, memo)
 
         return new
 
     def clone(self) -> RubikCube:
+        """
+        Alias for deep copy
+        :return:
+        """
         return copy.deepcopy(self)
 
     def __repr__(self):
@@ -134,20 +142,31 @@ class RubikCube:
 
         return str_to_return
 
-    def make_a_move(self, move: CubeMove):
-        """Make a move in the current cube."""
+    def _check_permitted_move(self, move: CubeMove):
         if move not in self.permitted_movements:
             raise NotPermittedMovementError(
                 f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
+
+    def _make_a_move(self, move: CubeMove) -> None:
+        """Make a movement in the current cube."""
+        self._check_permitted_move(move)
         move.move_the_cube(self)
 
-    def make_movements_from_list(self, list_of_moves: List[CubeMove]):
-        """Make movements from a list of CubeMoves."""
-        for move in list_of_moves:
-            self.make_a_move(move)
+    def make_a_move(self, move: CubeMove) -> RubikCube:
+        """Make a copy with the selected move."""
+        self._check_permitted_move(move)
+        self_copy: RubikCube = self.clone()
+        move.move_the_cube(self_copy)
+        return self_copy
 
-    def make_movements_from_str(self, str_of_moves: str):
+    def make_movements_from_list(self, list_of_moves: List[CubeMove]) -> RubikCube:
+        """Make movements from a list of CubeMoves."""
+        for move in list_of_moves[:-1]:
+            self._make_a_move(move)
+        return self.make_a_move(list_of_moves[-1])
+
+    def make_movements_from_str(self, str_of_moves: str) -> RubikCube:
         """Make movements from a string, separated by spaces."""
         list_of_str = str_of_moves.split()
         list_of_moves = [CubeMove.from_str(m_str) for m_str in list_of_str]
-        self.make_movements_from_list(list_of_moves)
+        return self.make_movements_from_list(list_of_moves)
