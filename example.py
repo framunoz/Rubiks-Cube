@@ -1,8 +1,5 @@
-import matplotlib.pyplot as plt
-import networkx as nx
-
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.graph import make_graph
+from rubiks_cube.graph import make_graph, generate_file
 from rubiks_cube.movements import CubeMove
 from rubiks_cube.utils import Color
 
@@ -13,11 +10,11 @@ def main():
     # f = Face(Color.BLUE, (2, 2))
 
     rc = RubikCube.from_dims(
-        (3, 2, 1),
+        (3, 3, 3),
         {CubeMove.R2, CubeMove.L2, CubeMove.U2, CubeMove.D2}
     )
     print(rc, end="\n\n")
-    rc.make_movements_from_str("L2 U2")
+    rc = rc.make_movements_from_str("L2 U2")
     print("\n", rc, "\n", sep="")
     # list_of_movements = [
     #     CubeMove.U, CubeMove.R, CubeMove.D, CubeMove.L,
@@ -29,7 +26,7 @@ def main():
     ]
     for m in list_of_movements:
         print(f"{m = }")
-        rc.make_a_move(m)
+        rc = rc.make_a_move(m)
         print(rc, end="\n\n")
 
     print("Faces")
@@ -42,22 +39,24 @@ def main():
     print(hash("blue"), hash("blue"))
 
 
-def other_main():
+def main2():
     g = make_graph((3, 2, 1), {CM.R2, CM.U2, CM.D2})
-    for i, rc in enumerate(g.nodes):
-        print(f"Estado {i = }")
-        print(rc)
-        print("Vecinos:")
-        print(g[rc])
-    options = {
-        'node_color': 'red',
-        'node_size': 50,
-        'edge_color': 'blue',
-        'width': 3,
-    }
-    nx.draw_kamada_kawai(g, **options)
-    plt.show()
+    generate_file(g)
+    # for i, rc in enumerate(g.nodes):
+    #     print(f"Estado {i = }")
+    #     print(rc)
+    #     print(g.nodes[rc])
+    #     print("Vecinos:")
+    #     print(g[rc])
+    # options = {
+    #     'node_color': 'red',
+    #     'node_size': 50,
+    #     'edge_color': 'blue',
+    #     'width': 3,
+    # }
+    # nx.draw_kamada_kawai(g, **options)
+    # plt.show()
 
 
 if __name__ == '__main__':
-    other_main()
+    main2()

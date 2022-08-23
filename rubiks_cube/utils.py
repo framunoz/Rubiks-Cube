@@ -28,13 +28,13 @@ class Color(Enum):
     WHITE = "white"
 
     def __repr__(self) -> str:
-        return _COLORS[self.value].format(self.name[0])
+        return _COLORS[str(self.value)].format(self.name[0])
 
     def __hash__(self) -> int:
         return {
             "green": 1, "red": 2, "yellow": 3,
             "orange": 4, "blue": 5, "white": 6
-        }.get(self.value, 0)
+        }.get(str(self.value), 0)
 
 
 G, R, Y, O, B, W = Color.GREEN, Color.RED, Color.YELLOW, Color.ORANGE, Color.BLUE, Color.WHITE
