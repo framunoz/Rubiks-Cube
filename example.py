@@ -43,18 +43,19 @@ def main():
 
 
 def other_main():
-    g = make_graph((3, 2, 1), {CM.L2, CM.R2, CM.U2, CM.D2})
+    g = make_graph((3, 2, 1), {CM.R2, CM.U2, CM.D2})
     for i, rc in enumerate(g.nodes):
         print(f"Estado {i = }")
         print(rc)
         print("Vecinos:")
         print(g[rc])
     options = {
-        'node_color': 'black',
+        'node_color': 'red',
         'node_size': 50,
+        'edge_color': 'blue',
         'width': 3,
     }
-    nx.draw(g, **options)
+    nx.draw_kamada_kawai(g, **options)
     plt.show()
 
 

@@ -22,9 +22,12 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
         for m in permitted_movements:
             other_rc = rc.make_a_move(m)
             if other_rc not in g.nodes:
-                # Add to the graph
-                g.add_node(other_rc)
-                g.add_edge(rc, other_rc, move=m)
                 # Add to the queue
                 d.append(other_rc)
+            # Add to the graph
+            g.add_node(other_rc)
+            if other_rc not in g[rc]:
+                g.add_edge(rc, other_rc, move=set())
+            g[rc][other_rc]["move"].add(m)
+            # g.add_edge(rc, other_rc, move=m)
     return g
