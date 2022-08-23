@@ -77,21 +77,21 @@ class D2(D):
 
 class CubeMove(Enum):
     """Enumerator that sum up the movements."""
-    R = R()
-    R2 = R2()
-    L = L()
-    L2 = L2()
-    U = U()
-    U2 = U2()
-    D = D()
-    D2 = D2()
+    R = R
+    R2 = R2
+    L = L
+    L2 = L2
+    U = U
+    U2 = U2
+    D = D
+    D2 = D2
 
     def __repr__(self):
         return self.name
 
     def move_the_cube(self, cube):
         """To use double dispatch over RubikCube."""
-        self.value.move_the_cube(cube)
+        self.value().move_the_cube(cube)
 
     @classmethod
     def from_str(cls, move_as_str: str) -> Optional[CubeMove]:

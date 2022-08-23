@@ -37,7 +37,7 @@ class TestBase(unittest.TestCase):
             [W, Y]
         ])
         # Faces
-        self.faces = [self.f1, self.f2, self.f3, self.f4, self.f5, self.f6]
+        self.faces = self.f1, self.f2, self.f3, self.f4, self.f5, self.f6
 
 
 if __name__ == '__main__':

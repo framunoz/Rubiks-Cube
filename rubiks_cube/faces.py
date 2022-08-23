@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from collections import deque
 from typing import Tuple, List
 
@@ -79,6 +80,27 @@ class Face:
 
     def __hash__(self):
         return hash(_as_tuple(self.central_face))
+
+    def __copy__(self) -> Face:
+        central_face = copy.copy(self.central_face)
+
+        new = self.__class__(central_face)
+
+        new.__dict__.update(self.__dict__)
+
+        return new
+
+    def __deepcopy__(self, memo=None) -> Face:
+        if memo is None:
+            memo = {}
+
+        central_face = copy.deepcopy(self.central_face, memo)
+
+        new = self.__class__(central_face)
+
+        new.__dict__ = copy.deepcopy(self.__dict__, memo)
+
+        return new
 
     @property
     def faces(self) -> List[Face]:

@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import copy
 from typing import List, Tuple
 
 from rubiks_cube.faces import Face
@@ -68,12 +69,49 @@ class RubikCube:
     @property
     def faces(self):
         """Iterates over every face in the current cube."""
-        return [self.up, self.left, self.front, self.right, self.back, self.down]
+        return self.up, self.left, self.front, self.right, self.back, self.down
 
     def __eq__(self, other):
         if isinstance(other, RubikCube):
             return self.faces == other.faces
         return False
+
+    def __hash__(self):
+        return hash(self.faces)
+
+    def __copy__(self) -> RubikCube:
+        up = copy.copy(self.up)
+        left = copy.copy(self.left)
+        front = copy.copy(self.front)
+        right = copy.copy(self.right)
+        back = copy.copy(self.back)
+        down = copy.copy(self.down)
+        # permitted_movements = copy.copy(self.permitted_movements)
+
+        new = self.__class__(up, left, front, right, back, down, self.permitted_movements)
+        new.__dict__.update(self.__dict__)
+
+        return new
+
+    def __deepcopy__(self, memo=None) -> RubikCube:
+        if memo is None:
+            memo = {}
+
+        up = copy.deepcopy(self.up, memo)
+        left = copy.deepcopy(self.left, memo)
+        front = copy.deepcopy(self.front, memo)
+        right = copy.deepcopy(self.right, memo)
+        back = copy.deepcopy(self.back, memo)
+        down = copy.deepcopy(self.down, memo)
+        # permitted_movements = copy.deepcopy(self.permitted_movements, memo)
+
+        new = self.__class__(up, left, front, right, back, down, self.permitted_movements)
+        new.__dict__ = copy.deepcopy(self.__dict__, memo)
+
+        return new
+
+    def clone(self) -> RubikCube:
+        return copy.deepcopy(self)
 
     def __repr__(self):
         _, _, length = self.dims
