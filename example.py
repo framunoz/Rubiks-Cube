@@ -1,3 +1,6 @@
+import matplotlib.pyplot as plt
+import networkx as nx
+
 from rubiks_cube.cube import RubikCube
 from rubiks_cube.graph import make_graph
 from rubiks_cube.movements import CubeMove
@@ -42,9 +45,17 @@ def main():
 def other_main():
     g = make_graph((3, 2, 1), {CM.L2, CM.R2, CM.U2, CM.D2})
     for i, rc in enumerate(g.nodes):
-        print(f"{i = }")
+        print(f"Estado {i = }")
         print(rc)
+        print("Vecinos:")
         print(g[rc])
+    options = {
+        'node_color': 'black',
+        'node_size': 50,
+        'width': 3,
+    }
+    nx.draw(g, **options)
+    plt.show()
 
 
 if __name__ == '__main__':

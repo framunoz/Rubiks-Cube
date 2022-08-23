@@ -16,6 +16,8 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
     g.add_node(rc)
     # While d is not empty
     while d:
+        # Actualize the current cube
+        rc = d.pop()
         # Make every permitted movement and add the new cube to the graph
         for m in permitted_movements:
             other_rc = rc.make_a_move(m)
@@ -25,6 +27,4 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
                 g.add_edge(rc, other_rc, move=m)
                 # Add to the queue
                 d.append(other_rc)
-        # Actualize the current cube
-        rc = d.pop()
     return g

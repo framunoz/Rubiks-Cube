@@ -161,9 +161,9 @@ class RubikCube:
 
     def make_movements_from_list(self, list_of_moves: List[CubeMove]) -> RubikCube:
         """Make movements from a list of CubeMoves."""
-        for move in list_of_moves[:-1]:
-            self._make_a_move(move)
-        return self.make_a_move(list_of_moves[-1])
+        for move in list_of_moves:
+            rc = self.make_a_move(move)
+        return rc
 
     def make_movements_from_str(self, str_of_moves: str) -> RubikCube:
         """Make movements from a string, separated by spaces."""
