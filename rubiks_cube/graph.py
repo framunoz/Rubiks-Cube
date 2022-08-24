@@ -58,4 +58,6 @@ def generate_file(g: nx.Graph, path=None):
         f.write(f"{len(g.nodes)} {len(g.edges)}\n")
         for u in g.nodes:
             for v in g[u]:
-                f.write(f"{g.nodes[u]['id']} {g.nodes[v]['id']}\n")
+                u_id, v_id = g.nodes[u]['id'], g.nodes[v]['id']
+                if u_id < v_id:
+                    f.write(f"{u_id} {v_id}\n")
