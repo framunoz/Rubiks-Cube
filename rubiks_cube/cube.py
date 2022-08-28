@@ -142,7 +142,7 @@ class RubikCube:
 
         return str_to_return
 
-    def _make_a_move(self, movement: CubeMove) -> RubikCube:
+    def _make_a_move_from_cube_move(self, movement: CubeMove) -> RubikCube:
         """Make a copy with the selected move."""
         # Check if the movement is permitted (or if it is even a movement).
         if movement not in self.permitted_movements:
@@ -156,7 +156,7 @@ class RubikCube:
         """Make movements from a list of CubeMoves."""
         rc = self
         for move in list_of_moves:
-            rc = rc._make_a_move(move)
+            rc = rc._make_a_move_from_cube_move(move)
         return rc
 
     def _make_movements_from_str(self, str_of_moves: str) -> RubikCube:
@@ -167,14 +167,14 @@ class RubikCube:
 
     def make_movements(self, movement: CubeMove | List[CubeMove] | str) -> RubikCube:
         """
-        Make a move given a movement. It can be whether a CubeMove, a list of CubeMoves or a string with
-        representations of movements.
+        Make a move on the Rubik's Cube given a movement. It can be whether a CubeMove, a list of CubeMoves or a
+        string with representations of movements.
 
         :param movement: The movement to apply on the Rubik's cube.
         :return: The Rubik's cube with the movement applied.
         """
         if isinstance(movement, CubeMove):
-            return self._make_a_move(movement)
+            return self._make_a_move_from_cube_move(movement)
         if isinstance(movement, list):
             return self._make_movements_from_list(movement)
         if isinstance(movement, str):

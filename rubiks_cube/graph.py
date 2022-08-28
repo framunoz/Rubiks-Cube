@@ -28,18 +28,14 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
     # The graph
     g = nx.Graph()
     g.add_node(rc, hash_id=hash(rc))
-    # While d is not empty
-    while queue:
-        # Actualize the current cube
-        current_rc = queue.pop()
+    while queue:  # While d is not empty
+        current_rc = queue.pop()  # Actualize the current cube
         # Make every permitted movement and add the new cube to the graph
         for m in permitted_movements:
             other_rc = current_rc.make_movements(m)
             if other_rc not in g.nodes:
-                # Add to the queue
-                queue.append(other_rc)
-                # Add to the graph
-                g.add_node(other_rc, hash_id=hash(other_rc))
+                queue.append(other_rc)  # Add to the queue
+                g.add_node(other_rc, hash_id=hash(other_rc))  # Add to the graph
             if other_rc not in g[current_rc]:
                 g.add_edge(current_rc, other_rc, move=set())
             g[current_rc][other_rc]["move"].add(m)
@@ -58,7 +54,7 @@ def generate_file(g: nx.Graph, path=None):
     :param path: A path
     :return: Nothing.
     """
-    path = path or "file.txt"
+    path = path or "graph.txt"
 
     with open(path, "w") as f:
         # Write n and m
