@@ -142,31 +142,41 @@ class RubikCube:
 
         return str_to_return
 
-    def _check_permitted_move(self, move: CubeMove):
-        if move not in self.permitted_movements:
+    def _make_a_move(self, movement: CubeMove) -> RubikCube:
+        """Make a copy with the selected move."""
+        # Check if the movement is permitted (or if it is even a movement).
+        if movement not in self.permitted_movements:
             raise NotPermittedMovementError(
                 f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
-
-    def _make_a_move(self, move: CubeMove) -> None:
-        """Make a movement in the current cube."""
-        self._check_permitted_move(move)
-        move.move_the_cube(self)
-
-    def make_a_move(self, move: CubeMove) -> RubikCube:
-        """Make a copy with the selected move."""
-        self._check_permitted_move(move)
         self_copy: RubikCube = self.clone()
-        move.move_the_cube(self_copy)
+        movement.move_the_cube(self_copy)
         return self_copy
 
-    def make_movements_from_list(self, list_of_moves: List[CubeMove]) -> RubikCube:
+    def _make_movements_from_list(self, list_of_moves: List[CubeMove]) -> RubikCube:
         """Make movements from a list of CubeMoves."""
+        rc = self
         for move in list_of_moves:
-            rc = self.make_a_move(move)
+            rc = rc._make_a_move(move)
         return rc
 
-    def make_movements_from_str(self, str_of_moves: str) -> RubikCube:
+    def _make_movements_from_str(self, str_of_moves: str) -> RubikCube:
         """Make movements from a string, separated by spaces."""
         list_of_str = str_of_moves.split()
         list_of_moves = [CubeMove.from_str(m_str) for m_str in list_of_str]
-        return self.make_movements_from_list(list_of_moves)
+        return self._make_movements_from_list(list_of_moves)
+
+    def make_movements(self, movement: CubeMove | List[CubeMove] | str) -> RubikCube:
+        """
+        Make a move given a movement. It can be whether a CubeMove, a list of CubeMoves or a string with
+        representations of movements.
+
+        :param movement: The movement to apply on the Rubik's cube.
+        :return: The Rubik's cube with the movement applied.
+        """
+        if isinstance(movement, CubeMove):
+            return self._make_a_move(movement)
+        if isinstance(movement, list):
+            return self._make_movements_from_list(movement)
+        if isinstance(movement, str):
+            return self._make_movements_from_str(movement)
+        raise NotPermittedMovementError("Please give a list of CubeMove or give a valid string format.")

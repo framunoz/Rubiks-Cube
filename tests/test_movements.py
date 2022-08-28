@@ -13,7 +13,7 @@ class TestBaseMove(TestBase):
         self.rc = RubikCube(*self.faces)
 
     def _test_move_the_cube(self, move: CubeMove, expected: RubikCube):
-        rc_moved = self.rc.make_a_move(move)
+        rc_moved = self.rc.make_movements(move)
         self.assertEqual(
             rc_moved, expected,
             f"'{repr(move)}' movement does not works."

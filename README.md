@@ -24,7 +24,7 @@ you can do it like the example:
 from rubiks_cube.cube import RubikCube
 from rubiks_cube.movements import CubeMove
 rc = RubikCube.from_dims((3, 2, 1))
-rc.make_a_move(CubeMove.L2)
+rc = rc.make_movements(CubeMove.L2)
 print(rc)
 ```
 
@@ -36,7 +36,7 @@ And you can make a series of movements in the following way:
 from rubiks_cube.cube import RubikCube
 from rubiks_cube.movements import CubeMove
 rc = RubikCube.from_dims((3, 2, 1))
-rc.make_movements_from_list([CubeMove.L2, CubeMove.U2])
+rc = rc.make_movements([CubeMove.L2, CubeMove.U2])
 print(rc)
 ```
 
@@ -47,7 +47,7 @@ Another (equivalent) way to do this:
 ```python
 from rubiks_cube.cube import RubikCube
 rc = RubikCube.from_dims((3, 2, 1))
-rc.make_movements_from_str("L2 U2")
+rc = rc.make_movements("L2 U2")
 print(rc)
 ```
 
