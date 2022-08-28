@@ -39,6 +39,11 @@ class F(BaseF):
         super().__init__(1)
 
 
+class Fp(BaseF):
+    def __init__(self):
+        super().__init__(-1)
+
+
 class F2(BaseF):
     def __init__(self):
         super().__init__(2)
@@ -54,6 +59,11 @@ class BaseB(BaseMove, abc.ABC):
 class B(BaseB):
     def __init__(self):
         super().__init__(1)
+
+
+class Bp(BaseB):
+    def __init__(self):
+        super().__init__(-1)
 
 
 class B2(BaseB):
@@ -73,6 +83,13 @@ class U(BaseU):
 
     def __init__(self):
         super().__init__(1)
+
+
+class Up(BaseU):
+    """Moves the Up Face in the clockwise direction."""
+
+    def __init__(self):
+        super().__init__(-1)
 
 
 class U2(BaseU):
@@ -96,6 +113,13 @@ class D(BaseD):
         super().__init__(1)
 
 
+class Dp(BaseD):
+    """Moves the Down Face in the clockwise direction."""
+
+    def __init__(self):
+        super().__init__(-1)
+
+
 class D2(BaseD):
     """Moves the Down Face in the clockwise direction twice."""
 
@@ -115,6 +139,13 @@ class L(BaseL):
 
     def __init__(self):
         super().__init__(1)
+
+
+class Lp(BaseL):
+    """Moves the Left Face in the clockwise direction."""
+
+    def __init__(self):
+        super().__init__(-1)
 
 
 class L2(BaseL):
@@ -138,6 +169,13 @@ class R(BaseR):
         super().__init__(1)
 
 
+class Rp(BaseR):
+    """Moves the Right Face in the clockwise direction."""
+
+    def __init__(self):
+        super().__init__(-1)
+
+
 class R2(BaseR):
     """Moves the Right Face in the clockwise direction twice."""
 
@@ -148,16 +186,22 @@ class R2(BaseR):
 class CubeMove(Enum):
     """Enumerator that sum up the movements."""
     F = F
+    Fp = Fp
     F2 = F2
     B = B
+    Bp = Bp
     B2 = B2
     U = U
+    Up = Up
     U2 = U2
     D = D
+    Dp = Dp
     D2 = D2
     L = L
+    Lp = Lp
     L2 = L2
     R = R
+    Rp = Rp
     R2 = R2
 
     def __repr__(self):
