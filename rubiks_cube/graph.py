@@ -1,9 +1,15 @@
-from collections import deque
+from typing import Iterable
 
 import networkx as nx
 
 from rubiks_cube.cube import RubikCube
 from rubiks_cube.movements import CubeMove
+
+
+def _order_list_of_rc(iterable: Iterable[RubikCube]) -> list[RubikCube]:
+    ordered_iterable: list[RubikCube] = list(iterable)
+    ordered_iterable.sort(key=lambda x: hash(x))
+    return ordered_iterable
 
 
 def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> nx.Graph:
@@ -18,27 +24,28 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
     # Principal Rubik's Cube
     rc = RubikCube.from_dims(dims, permitted_movements)
     # Queue to make a BFS
-    d = deque([rc])
+    queue = [rc]
     # The graph
     g = nx.Graph()
-    g.add_node(rc)
+    g.add_node(rc, hash_id=hash(rc))
     # While d is not empty
-    while d:
+    while queue:
         # Actualize the current cube
-        rc = d.pop()
+        current_rc = queue.pop()
         # Make every permitted movement and add the new cube to the graph
         for m in permitted_movements:
-            other_rc = rc.make_a_move(m)
+            other_rc = current_rc.make_movements(m)
             if other_rc not in g.nodes:
                 # Add to the queue
-                d.append(other_rc)
+                queue.append(other_rc)
                 # Add to the graph
-                g.add_node(other_rc)
-            if other_rc not in g[rc]:
-                g.add_edge(rc, other_rc, move=set())
-            g[rc][other_rc]["move"].add(m)
-    for i, n in enumerate(g.nodes):
-        g.nodes[n]["id"] = i
+                g.add_node(other_rc, hash_id=hash(other_rc))
+            if other_rc not in g[current_rc]:
+                g.add_edge(current_rc, other_rc, move=set())
+            g[current_rc][other_rc]["move"].add(m)
+
+    for i, rc in enumerate(_order_list_of_rc(g.nodes)):
+        g.nodes[rc]["id"] = i
     return g
 
 
@@ -56,8 +63,8 @@ def generate_file(g: nx.Graph, path=None):
     with open(path, "w") as f:
         # Write n and m
         f.write(f"{len(g.nodes)} {len(g.edges)}\n")
-        for u in g.nodes:
-            for v in g[u]:
+        for u in _order_list_of_rc(g.nodes):
+            for v in _order_list_of_rc(g[u].keys()):
                 u_id, v_id = g.nodes[u]['id'], g.nodes[v]['id']
                 if u_id < v_id:
                     f.write(f"{u_id} {v_id}\n")
