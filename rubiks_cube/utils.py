@@ -1,12 +1,12 @@
 from enum import Enum
-from typing import Dict, Union, Tuple
+from typing import Union
 
 # Personal Typing.
 Slice = Union[slice, int]
-TupleSlice = Tuple[Slice, Slice]
+TupleSlice = tuple[Slice, Slice]
 
 # Dictionary to change the color of the text
-_COLORS: Dict[str, str] = {
+_COLORS: dict[str, str] = {
     "green": "\033[38;5;46m{}\033[0;0m",
     "red": "\033[38;5;1m{}\033[0;0m",
     "yellow": "\033[38;5;226m{}\033[0;0m",

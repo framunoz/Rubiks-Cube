@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import copy
-from typing import List, Tuple
 
 from rubiks_cube.faces import Face
 from rubiks_cube.movements import CubeMove
@@ -55,7 +54,7 @@ class RubikCube:
         self.dims = self.front.shape[0], self.front.shape[1], self.right.shape[1]
 
     @classmethod
-    def from_dims(cls, dims: Tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> RubikCube:
+    def from_dims(cls, dims: tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> RubikCube:
         """
         Factory method that generates a RubikCube instance given the dimensions and permitted movements.
 
@@ -150,7 +149,7 @@ class RubikCube:
         movement.move_the_cube(self_copy)
         return self_copy
 
-    def _make_movements_from_list(self, list_of_moves: List[CubeMove]) -> RubikCube:
+    def _make_movements_from_list(self, list_of_moves: list[CubeMove]) -> RubikCube:
         """Make movements from a list of CubeMoves."""
         rc = self
         for move in list_of_moves:

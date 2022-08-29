@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import copy
 from collections import deque
-from typing import Tuple, List
 
 import numpy as np
 
@@ -16,19 +15,19 @@ _LIST_DIRECTIONS_TO_INV = [
 ]
 
 
-def _color_to_str(list_of_colors: List[Color]) -> List[str]:
+def _color_to_str(list_of_colors: list[Color]) -> list[str]:
     """Function that maps the list of colors into a list of strings."""
     return [repr(c) for c in list_of_colors]
 
 
-def _invert_piece(piece, direction=-1) -> List[Color]:
+def _invert_piece(piece, direction=-1) -> list[Color]:
     """Function that invert a piece if the 'direction' is negative. Otherwise, it returns the same list."""
     if direction < 0:
         return list(reversed(piece))
     return piece
 
 
-def _rotate_pieces(list_of_pieces, times) -> List[List[Color]]:
+def _rotate_pieces(list_of_pieces, times) -> list[list[Color]]:
     """Function that rotates the given list of pieces depending on the parameter 'times'."""
     even, odd = [1, 1, -1, -1], [1, -1, -1, 1]
     list_of_directions = [even, odd, even, odd]
@@ -46,12 +45,12 @@ def _as_tuple(arr: np.ndarray) -> tuple[tuple, ...]:
 class Face:
     """Class that represents a face of the Rubik's Cube."""
 
-    def __init__(self, central_face: np.ndarray[Color] | List[List[Color]]):
+    def __init__(self, central_face: np.ndarray[Color] | list[list[Color]]):
         # Central Face
         self.central_face: np.ndarray[Color] = np.asarray(central_face)
 
         # Shape
-        self.shape: Tuple[int, int] = self.central_face.shape
+        self.shape: tuple[int, int] = self.central_face.shape
 
         # Faces
         self.up: Face | None = None
@@ -59,11 +58,11 @@ class Face:
         self.down: Face | None = None
         self.left: Face | None = None
 
-        self._direc_list: List[Direc] | None = None
-        self._slice_list: List[TupleSlice] | None = None
+        self._direc_list: list[Direc] | None = None
+        self._slice_list: list[TupleSlice] | None = None
 
     @classmethod
-    def from_color(cls, color: Color | str, shape: Tuple[int, int]) -> Face:
+    def from_color(cls, color: Color | str, shape: tuple[int, int]) -> Face:
         """Factory method that creates a Face given a color and a shape."""
         return cls(np.tile(Color(color), shape))
 
@@ -107,16 +106,16 @@ class Face:
         """Iterates over the other faces adjacent tp the current face."""
         return self.up, self.right, self.down, self.left
 
-    def _invert_pieces(self, list_of_pieces) -> List[List[Color]]:
+    def _invert_pieces(self, list_of_pieces) -> list[list[Color]]:
         """Invert some pieces if it is necessary."""
-        to_return: List[List[Color]] = [list(elem) for elem in list_of_pieces]
+        to_return: list[list[Color]] = [list(elem) for elem in list_of_pieces]
         for i, dir_set in enumerate(_LIST_DIRECTIONS_TO_INV):
             if self._direc_list[i] in dir_set:
                 to_return[i] = _invert_piece(to_return[i])
         return to_return
 
     @property
-    def pieces(self) -> List[List[Color]]:
+    def pieces(self) -> list[list[Color]]:
         """Returns the pieces adjacent of the current face."""
         u_s, r_s, d_s, l_s = self._slice_list
         return self._invert_pieces([self.up[u_s], self.right[r_s], self.down[d_s], self.left[l_s]])
@@ -158,8 +157,8 @@ class Face:
         #  si la cara central es de (2, 2) que el de la izquierda sea de (2, 100) y no de (100, 100).
         (up, up_d), (right, right_d), (down, down_d), (left, left_d) = up_tuple, right_tuple, down_tuple, left_tuple
         self.up, self.right, self.down, self.left = up, right, down, left
-        self._direc_list: List[Direc] = [Direc(s) for s in [up_d, right_d, down_d, left_d]]
-        self._slice_list: List[TupleSlice] = [d.generate_slice() for d in self._direc_list]
+        self._direc_list: list[Direc] = [Direc(s) for s in [up_d, right_d, down_d, left_d]]
+        self._slice_list: list[TupleSlice] = [d.generate_slice() for d in self._direc_list]
 
     def rotate(self, times: int):
         """Rotate the face at the desired times."""
