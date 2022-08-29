@@ -21,7 +21,7 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
     queue = [rc]
     # The graph
     g = nx.Graph()
-    g.add_node(rc, hash_id=hash(rc))
+    g.add_node(rc)
     while queue:  # While d is not empty
         current_rc = queue.pop()  # Actualize the current cube
         # Make every permitted movement and add the new cube to the graph
@@ -29,7 +29,7 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
             other_rc = current_rc.make_movements(m)
             if other_rc not in g.nodes:
                 queue.append(other_rc)  # Add to the queue
-                g.add_node(other_rc, hash_id=hash(other_rc))  # Add to the graph
+                g.add_node(other_rc)  # Add to the graph
             if other_rc not in g[current_rc]:
                 g.add_edge(current_rc, other_rc, move=set())
             g[current_rc][other_rc]["move"].add(m)
@@ -42,6 +42,22 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
     for i, rc in enumerate(order_list_of_rc(g.nodes)):
         g.nodes[rc]["id"] = i
     return g
+
+
+def find_bipartite(g: nx.Graph):
+    """
+    Find a bipartite in the graph g and label it. Returns the bipartite.
+
+    :param g: A graph.
+    :return: two sets.
+    """
+    U, V = nx.algorithms.bipartite.sets(g)
+    for n in g.nodes:
+        if n in U:
+            g.nodes[n].update(color="blue", bipartite=0)
+        else:
+            g.nodes[n].update(color="red", bipartite=1)
+    return U, V
 
 
 def make_simple_graph(complex_graph: nx.Graph) -> dict[int, set[int]]:

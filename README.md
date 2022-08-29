@@ -76,23 +76,23 @@ and
 The described graph can be computed with the following instructions:
 
 ```python
-import networkx as nx
 from matplotlib import pyplot as plt
 
 from rubiks_cube.graph import make_graph
 from rubiks_cube.movements import CubeMove as CM
+from rubiks_cube.plotters import GraphPlotter
 
-g: nx.Graph = make_graph(
+g = make_graph(
     dims=(3, 2, 1),
     permitted_movements={CM.R2, CM.D2, CM.U2}
 )
-nx.draw_kamada_kawai(
-    g,
-    node_color="red", node_size=50,
-    edge_color="blue", width=3
-)
+gp = GraphPlotter(g)
+gp.compute_kamada_kawai_layout()
+gp.find_bipartite()
+gp.draw()
 plt.show()
 ```
 
 And it plots the following graph:
 ![A graph](img/graph.png)
+

@@ -2,8 +2,9 @@ import networkx as nx
 from matplotlib import pyplot as plt
 
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.graph import make_graph, generate_file
+from rubiks_cube.graph import make_graph
 from rubiks_cube.movements import CubeMove as CM
+from rubiks_cube.plotters import GraphPlotter
 from rubiks_cube.utils import Color
 
 
@@ -42,7 +43,7 @@ def main():
 
 def main2():
     g: nx.Graph = make_graph((3, 2, 1), {CM.R2, CM.D2, CM.U2})
-    generate_file(g)
+    # generate_file(g)
     for i, rc in enumerate(g.nodes):
         print(f"Estado {i = }")
         print(rc)
@@ -51,23 +52,19 @@ def main2():
         neighbors = list(g[rc].keys())
         neighbors.sort(key=lambda x: hash(x))
         print(g[rc])
-    nx.draw_kamada_kawai(
-        g,
-        node_color="red", node_size=50,
-        edge_color="blue", width=3
-    )
+    gp = GraphPlotter(g)
+    gp.compute_kamada_kawai_layout()
+    gp.find_bipartite()
+    gp.draw()
+
     plt.show()
 
 
 def main3():
     g: nx.Graph = make_graph((3, 2, 1), {CM.R2, CM.D2, CM.U2})
-    simple_graph = {}
-    for n in g.nodes:
-        n_id: int = g.nodes[n]["id"]
-        print(n_id)
-        print(g[n])
-        simple_graph[n_id] = {g.nodes[other]["id"] for other in g[n]}
-        print(simple_graph)
+    U, V = nx.algorithms.bipartite.sets(g)
+    print(U, V)
+    print(len(U), len(V))
 
 
 if __name__ == '__main__':
