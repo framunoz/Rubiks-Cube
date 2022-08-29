@@ -6,12 +6,6 @@ from rubiks_cube.cube import RubikCube
 from rubiks_cube.movements import CubeMove
 
 
-def _order_list_of_rc(iterable: Iterable[RubikCube]) -> list[RubikCube]:
-    ordered_iterable: list[RubikCube] = list(iterable)
-    ordered_iterable.sort(key=lambda x: hash(x))
-    return ordered_iterable
-
-
 def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> nx.Graph:
     """
     Creates a graph with dimensions `dims` and permitted movements `permitted_movements` using a Rubik's Cube as node,
@@ -40,9 +34,28 @@ def make_graph(dims: tuple[int, int, int], permitted_movements: set[CubeMove] = 
                 g.add_edge(current_rc, other_rc, move=set())
             g[current_rc][other_rc]["move"].add(m)
 
-    for i, rc in enumerate(_order_list_of_rc(g.nodes)):
+    def order_list_of_rc(iterable: Iterable[RubikCube]) -> list[RubikCube]:
+        ordered_iterable: list[RubikCube] = list(iterable)
+        ordered_iterable.sort(key=lambda x: hash(x))
+        return ordered_iterable
+
+    for i, rc in enumerate(order_list_of_rc(g.nodes)):
         g.nodes[rc]["id"] = i
     return g
+
+
+def make_simple_graph(complex_graph: nx.Graph) -> dict[int, set[int]]:
+    """
+    Make a simple graph (a dict of sets) from a complex graph (the nx.Graph instance).
+
+    :param complex_graph: A complex graph.
+    :return: A simple graph.
+    """
+    simple_graph: dict[int, set[int]] = {}
+    for n in complex_graph.nodes:
+        n_id: int = complex_graph.nodes[n]["id"]
+        simple_graph[n_id] = {complex_graph.nodes[other]["id"] for other in complex_graph[n]}
+    return simple_graph
 
 
 def generate_file(g: nx.Graph, path=None):
@@ -56,11 +69,18 @@ def generate_file(g: nx.Graph, path=None):
     """
     path = path or "graph.txt"
 
+    simple_graph = make_simple_graph(g)
+
+    def sort_list(other):
+        lst = list(other)
+        lst.sort()
+        return lst
+
     with open(path, "w") as f:
         # Write n and m
         f.write(f"{len(g.nodes)} {len(g.edges)}\n")
-        for u in _order_list_of_rc(g.nodes):
-            for v in _order_list_of_rc(g[u].keys()):
-                u_id, v_id = g.nodes[u]['id'], g.nodes[v]['id']
-                if u_id < v_id:
-                    f.write(f"{u_id} {v_id}\n")
+        # Write the edges
+        for u in sort_list(simple_graph.keys()):
+            for v in sort_list(simple_graph[u]):
+                if u < v:
+                    f.write(f"{u} {v}\n")

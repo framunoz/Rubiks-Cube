@@ -56,7 +56,13 @@ class RubikCube:
 
     @classmethod
     def from_dims(cls, dims: Tuple[int, int, int], permitted_movements: set[CubeMove] = None) -> RubikCube:
-        """Factory method that generates a RubikCube instance given the dimensions and permitted movements."""
+        """
+        Factory method that generates a RubikCube instance given the dimensions and permitted movements.
+
+        :param dims: The dimensions in the standard (height, width, length).
+        :param permitted_movements: A set of permitted movements.
+        :return: An instance of the Rubik's Cube with the desired dimension.
+        """
         height, width, length = dims
         cls_to_return = cls(
             front=Face.from_color(Color.RED, (height, width)), back=Face.from_color(Color.ORANGE, (height, width)),
@@ -96,10 +102,9 @@ class RubikCube:
     def __deepcopy__(self, memo=None) -> RubikCube:
         """
         To use prototype pattern. It makes a deep copy of the current instance
-        :return:
+        :return: A deepcopy of the Rubik's cube.
         """
-        if memo is None:
-            memo = {}
+        memo = memo or {}
 
         up = copy.deepcopy(self.up, memo)
         left = copy.deepcopy(self.left, memo)
@@ -113,13 +118,6 @@ class RubikCube:
         new.__dict__ = copy.deepcopy(self.__dict__, memo)
 
         return new
-
-    def clone(self) -> RubikCube:
-        """
-        Alias for deep copy
-        :return:
-        """
-        return copy.deepcopy(self)
 
     def __repr__(self):
         _, _, length = self.dims
@@ -148,7 +146,7 @@ class RubikCube:
         if movement not in self.permitted_movements:
             raise NotPermittedMovementError(
                 f"Movement not allowed. Please choose one of the list: {self.permitted_movements}.")
-        self_copy: RubikCube = self.clone()
+        self_copy: RubikCube = copy.deepcopy(self)
         movement.move_the_cube(self_copy)
         return self_copy
 
@@ -161,11 +159,11 @@ class RubikCube:
 
     def _make_movements_from_str(self, str_of_moves: str) -> RubikCube:
         """Make movements from a string, separated by spaces."""
-        list_of_str = str_of_moves.split()
-        list_of_moves = [CubeMove.from_str(m_str) for m_str in list_of_str]
+        list_of_str: list[str] = str_of_moves.split()
+        list_of_moves: list[CubeMove] = [CubeMove.parse_move(m_str) for m_str in list_of_str]
         return self._make_movements_from_list(list_of_moves)
 
-    def make_movements(self, movement: CubeMove | List[CubeMove] | str) -> RubikCube:
+    def make_movements(self, movement: CubeMove | list[CubeMove] | str) -> RubikCube:
         """
         Make a move on the Rubik's Cube given a movement. It can be whether a CubeMove, a list of CubeMoves or a
         string with representations of movements.

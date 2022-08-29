@@ -71,7 +71,7 @@ class Face:
         return self.central_face.__getitem__(index)
 
     def __setitem__(self, index, item):
-        self.central_face[index] = item
+        self.central_face.__setitem__(index, item)
 
     def __eq__(self, other):
         if isinstance(other, Face):
@@ -103,9 +103,9 @@ class Face:
         return new
 
     @property
-    def faces(self) -> List[Face]:
+    def faces(self) -> tuple[Face]:
         """Iterates over the other faces adjacent tp the current face."""
-        return [self.up, self.right, self.down, self.left]
+        return self.up, self.right, self.down, self.left
 
     def _invert_pieces(self, list_of_pieces) -> List[List[Color]]:
         """Invert some pieces if it is necessary."""

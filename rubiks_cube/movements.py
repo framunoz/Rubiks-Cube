@@ -212,6 +212,6 @@ class CubeMove(Enum):
         self.value().move_the_cube(cube)
 
     @classmethod
-    def from_str(cls, move_as_str: str) -> Optional[CubeMove]:
+    def parse_move(cls, move_as_str: str) -> Optional[CubeMove]:
         """Returns a CubeMove given a string that represents it."""
         return {m.name: getattr(cls, m.name) for m in cls}.get(move_as_str, None)

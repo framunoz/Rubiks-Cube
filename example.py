@@ -50,13 +50,24 @@ def main2():
         print("Vecinos:")
         neighbors = list(g[rc].keys())
         neighbors.sort(key=lambda x: hash(x))
-        print(neighbors)
+        print(g[rc])
     nx.draw_kamada_kawai(
         g,
         node_color="red", node_size=50,
         edge_color="blue", width=3
     )
     plt.show()
+
+
+def main3():
+    g: nx.Graph = make_graph((3, 2, 1), {CM.R2, CM.D2, CM.U2})
+    simple_graph = {}
+    for n in g.nodes:
+        n_id: int = g.nodes[n]["id"]
+        print(n_id)
+        print(g[n])
+        simple_graph[n_id] = {g.nodes[other]["id"] for other in g[n]}
+        print(simple_graph)
 
 
 if __name__ == '__main__':
