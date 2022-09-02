@@ -12,11 +12,11 @@ def main():
     # f = Face(Color.BLUE, (2, 2))
 
     rc = RubikCube.from_dims(
-        (3, 3, 3),
-        {CM.R2, CM.L2, CM.U2, CM.D2}
+        (1, 3, 2),
+        # {CM.R2, CM.U2, CM.D2}
     )
     print(rc, end="\n\n")
-    rc = rc.make_movements("L2 U2")
+    rc = rc.make_movements("hola")
     print("\n", rc, "\n", sep="")
     # list_of_movements = [
     #     CM.U, CM.R, CM.D, CM.L,
@@ -42,26 +42,32 @@ def main():
 
 
 def main2():
-    g: nx.Graph = make_graph((3, 2, 1), {CM.R2, CM.D2, CM.U2})
-    # generate_file(g)
-    for i, rc in enumerate(g.nodes):
-        print(f"Estado {i = }")
-        print(rc)
-        print(g.nodes[rc])
-        print("Vecinos:")
-        neighbors = list(g[rc].keys())
-        neighbors.sort(key=lambda x: hash(x))
-        print(g[rc])
+    g: nx.Graph = make_graph(
+        (1, 3, 2),
+        {CM.R2, CM.L2, CM.B2}
+    )
+    # for i, rc in enumerate(g.nodes):
+    #     print(f"Estado {i = }")
+    #     print(rc)
+    #     print(g.nodes[rc])
+    #     print("Vecinos:")
+    #     neighbors = list(g[rc].keys())
+    #     neighbors.sort(key=lambda x: hash(x))
+    #     print(g[rc])
     gp = GraphPlotter(g)
     gp.compute_kamada_kawai_layout()
-    gp.find_bipartite()
+    U, V = gp.find_bipartite()
     gp.draw()
+
+    # Dictionaries in the convention id - Rubik's Cube. Bipartition
+    print({g.nodes[n]["id"]: n for n in U})
+    print({g.nodes[n]["id"]: n for n in V})
 
     plt.show()
 
 
 def main3():
-    g: nx.Graph = make_graph((3, 2, 1), {CM.R2, CM.D2, CM.U2})
+    g: nx.Graph = make_graph((1, 3, 2), {CM.R2, CM.D2, CM.U2})
     U, V = nx.algorithms.bipartite.sets(g)
     print(U, V)
     print(len(U), len(V))

@@ -122,7 +122,7 @@ class RubikCube:
         _, _, length = self.dims
 
         # Up face
-        str_to_return = ""
+        str_to_return = "\n"
         str_to_return += self.up.repr_central_face(2 * length + 1) + "\n\n"
 
         # Left, front, right and back face

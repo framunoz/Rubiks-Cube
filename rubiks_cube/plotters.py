@@ -59,3 +59,5 @@ class GraphPlotter:
             self._options.update(node_color=colors.values())
         if change_layout:
             self._options.update(pos=nx.bipartite_layout(self.g, self.U))
+
+        return self.U, self.V
