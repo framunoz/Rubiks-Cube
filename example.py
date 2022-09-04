@@ -2,9 +2,10 @@ import networkx as nx
 from matplotlib import pyplot as plt
 
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.graph import make_graph, generate_clauses, generate_cnf_file
+from rubiks_cube.graph import make_graph
 from rubiks_cube.movements import CubeMove as CM
 from rubiks_cube.plotters import GraphPlotter
+from rubiks_cube.satisfiability import generate_clauses, generate_cnf_file
 from rubiks_cube.utils import Color
 
 
