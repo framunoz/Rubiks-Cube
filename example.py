@@ -2,7 +2,7 @@ import networkx as nx
 from matplotlib import pyplot as plt
 
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.graph import make_graph
+from rubiks_cube.graph import make_graph, generate_clauses, generate_cnf_file
 from rubiks_cube.movements import CubeMove as CM
 from rubiks_cube.plotters import GraphPlotter
 from rubiks_cube.utils import Color
@@ -73,5 +73,14 @@ def main3():
     print(len(U), len(V))
 
 
+def main4():
+    g: nx.Graph = make_graph((1, 3, 2), {CM.R2, CM.L2, CM.B2})
+    clauses = generate_clauses(g, 0, 1)
+    for c in clauses:
+        print(c)
+
+    generate_cnf_file(g, RubikCube.from_dims((1, 3, 2)))
+
+
 if __name__ == '__main__':
-    main2()
+    main4()
