@@ -1,8 +1,10 @@
 import os
-from itertools import product
+from itertools import product, combinations
+from typing import Optional
 
 import networkx as nx
 from pysat.formula import CNF
+from pysat.solvers import Solver
 
 from rubiks_cube.cube import RubikCube
 from rubiks_cube.graph import make_simple_graph, find_bipartite
@@ -53,6 +55,11 @@ def generate_clauses(g: nx.Graph, s: int, t: int) -> list[list[int, ...]]:
     for i in range(n):
         clauses.append([X[u, i] for u in range(n)])
 
+    # Cardinality constraints
+    for i in range(n):
+        for u, v in combinations(range(n), 2):
+            clauses.append([-X[u, i], -X[v, i]])
+
     # The set V - t
     V_m_t: set[int] = set(range(n))
     V_m_t.discard(t)
@@ -90,3 +97,38 @@ def generate_cnf_file(graph: nx.Graph, t: RubikCube,
         clauses = generate_clauses(graph, s_, t_)
         cnf = CNF(from_clauses=clauses)
         cnf.to_file(os.path.join(source_path, name_format.format(s_)))
+
+
+def solve_clause(file_name: str, solver_name="cd", use_timer=False) -> Optional[list[int]]:
+    # Boolean Formula
+    f = CNF(from_file=file_name)
+
+    # Solver
+    with Solver(name=solver_name, bootstrap_with=f, use_timer=use_timer) as s:
+        # Solving CNF
+        is_solved = s.solve()
+
+        if is_solved:
+            # Getting the model
+            model: list[int] = s.get_model()
+
+            return model
+
+    return None
+
+
+def solve_clause_interpreted(g: nx.Graph, file_name: str, solver_name="cd", use_timer=False):
+    model = solve_clause(file_name, solver_name, use_timer)
+
+    _, X_ = generate_variables(g)
+
+    answer = [X_[k] for k in model if k > 0]
+    answer.sort(key=lambda x: x[1])
+
+    id_to_rc = {g.nodes[n]["id"]: n for n in g.nodes}
+
+    answer_ = []
+    for i, _ in answer:
+        answer_.append(id_to_rc[i])
+
+    return answer_
