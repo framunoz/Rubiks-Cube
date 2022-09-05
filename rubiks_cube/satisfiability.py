@@ -47,6 +47,15 @@ def generate_clauses(g: nx.Graph, s: int, t: int) -> list[list[int, ...]]:
     # Impose that node s has the position 0 and the node t the position (n-1)
     clauses: list[list[int, ...]] = [[X[s, 0]], [X[t, n - 1]]]
 
+    # The set V - t
+    V_m_t: set[int] = set(range(n))
+    V_m_t.discard(t)
+
+    # Verify that the path is Hamiltonian
+    for i in range(n - 1):
+        for u in V_m_t:
+            clauses.append([-X[u, i]] + [X[v, i + 1] for v in neighbours[u]])
+
     # Each vertex has a position
     for u in range(n):
         clauses.append([X[u, i] for i in range(n)])
@@ -59,14 +68,6 @@ def generate_clauses(g: nx.Graph, s: int, t: int) -> list[list[int, ...]]:
     for i in range(n):
         for u, v in combinations(range(n), 2):
             clauses.append([-X[u, i], -X[v, i]])
-
-    # The set V - t
-    V_m_t: set[int] = set(range(n))
-    V_m_t.discard(t)
-
-    # Verify that the path is Hamiltonian
-    for u, i in zip(V_m_t, range(n - 1)):
-        clauses.append([-X[u, i]] + [X[v, i + 1] for v in neighbours[u]])
 
     return clauses
 
@@ -129,6 +130,6 @@ def solve_clause_interpreted(g: nx.Graph, file_name: str, solver_name="cd", use_
 
     answer_ = []
     for i, _ in answer:
-        answer_.append(id_to_rc[i])
+        answer_.append((id_to_rc[i], i))
 
     return answer_
