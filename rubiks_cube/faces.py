@@ -73,9 +73,16 @@ class Face:
         self.central_face.__setitem__(index, item)
 
     def __eq__(self, other):
-        if isinstance(other, Face):
-            return (self.central_face == other.central_face).all()
-        return self.central_face == other
+        # Self check
+        if other is self:
+            return True
+        # Null check
+        if other is None:
+            return False
+        if not isinstance(other, Face):
+            return False
+        other: Face
+        return (self.central_face == other.central_face).all()
 
     def __hash__(self):
         return hash(_as_tuple(self.central_face))

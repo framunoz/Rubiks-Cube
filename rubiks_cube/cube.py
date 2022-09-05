@@ -77,9 +77,17 @@ class RubikCube:
         return self.up, self.left, self.front, self.right, self.back, self.down
 
     def __eq__(self, other):
-        if isinstance(other, RubikCube):
-            return self.faces == other.faces
-        return False
+        if other is self:
+            return True
+        if other is None:
+            return False
+        if not isinstance(other, RubikCube):
+            return False
+        other: RubikCube
+        for f_self, f_other in zip(self.faces, other.faces):
+            if f_self != f_other:
+                return False
+        return True
 
     def __hash__(self):
         return hash(self.faces)

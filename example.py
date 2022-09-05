@@ -47,6 +47,9 @@ def main2():
         (1, 3, 2),
         {CM.R2, CM.L2, CM.B2}
     )
+    n: int = len(g)
+    m: int = g.number_of_edges()
+    print(f"{n = }, {m = }")
     # for i, rc in enumerate(g.nodes):
     #     print(f"Estado {i = }")
     #     print(rc)
@@ -68,7 +71,7 @@ def main2():
 
 
 def main3():
-    g: nx.Graph = make_graph((1, 3, 2), {CM.R2, CM.D2, CM.U2})
+    g: nx.Graph = make_graph((1, 3, 2), {CM.R2, CM.L2, CM.B2})
     U, V = nx.algorithms.bipartite.sets(g)
     print(U, V)
     print(len(U), len(V))
@@ -99,5 +102,5 @@ def main5():
 
 
 if __name__ == '__main__':
-    main4()
+    main2()
     # main5()

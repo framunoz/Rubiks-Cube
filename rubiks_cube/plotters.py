@@ -12,7 +12,9 @@ class GraphPlotter:
     def __init__(self, g: Graph):
         self.g: Graph = copy.deepcopy(g)  # The current graph
         # Personal options for the graph
-        self._options: dict[str, Any] = dict(node_color='red', node_size=350, width=3)
+        self._options: dict[str, Any] = dict(
+            node_color='red', font_color='white', node_size=350, width=3,
+        )
         # Update the labels
         self._options.update(
             labels={n: g.nodes[n]["id"] for n in g.nodes},
