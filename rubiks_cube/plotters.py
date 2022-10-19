@@ -19,8 +19,6 @@ class GraphPlotter:
         self._options.update(
             labels={n: g.nodes[n]["id"] for n in g.nodes},
         )
-        # Bipartite
-        self.U, self.V = None, None
 
     def compute_kamada_kawai_layout(self, *args, **kwargs):
         """
@@ -36,6 +34,15 @@ class GraphPlotter:
             pos=nx.kamada_kawai_layout(self.g, *args, **options)
         )
 
+    def compute_bipartite_layout(self, change_color=True, *args, **kwargs):
+        U, V = self.find_bipartite(change_color=change_color)
+        options = dict(scale=3)
+        options.update(kwargs)
+        self._options.update(
+            pos=nx.bipartite_layout(self.g, U, *args, **kwargs)
+        )
+        return U, V
+
     def draw(self, *args, **kwargs):
         """
         Draw the graph with the desired configurations.
@@ -47,7 +54,7 @@ class GraphPlotter:
         self._options.update(kwargs)
         nx.draw(self.g, *args, **self._options)
 
-    def find_bipartite(self, change_color=True, change_layout=False):
+    def find_bipartite(self, change_color=True):
         """
         Find a bipartite in the graph and plot the colours of the bipartite graph.
 
@@ -55,11 +62,9 @@ class GraphPlotter:
         :param change_layout: True if you want to change the layout in the plot.
         :return: Nothing.
         """
-        self.U, self.V = find_bipartite(self.g)
+        U, V = find_bipartite(self.g)
         if change_color:
             colors = nx.get_node_attributes(self.g, "color")
             self._options.update(node_color=colors.values())
-        if change_layout:
-            self._options.update(pos=nx.bipartite_layout(self.g, self.U))
 
-        return self.U, self.V
+        return U, V
