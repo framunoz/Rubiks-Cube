@@ -2,10 +2,10 @@ import networkx as nx
 from matplotlib import pyplot as plt
 
 from rubiks_cube.cube import RubikCube
-from rubiks_cube.graph import make_graph
+from rubiks_cube.graph import make_graph, generate_file
 from rubiks_cube.movements import CubeMove as CM
 from rubiks_cube.plotters import GraphPlotter
-from rubiks_cube.satisfiability import solve_clause_interpreted
+from rubiks_cube.satisfiability import solve_clause_interpreted, generate_cnf_file
 from rubiks_cube.utils import Color
 
 
@@ -101,6 +101,51 @@ def main5():
         print(v)
 
 
+def main6():
+    g: nx.Graph = make_graph(
+        (1, 3, 3),
+        {CM.R2, CM.L2, CM.B2, CM.F2}
+    )
+    n: int = len(g)
+    m: int = g.number_of_edges()
+    print(f"{n = }, {m = }")
+    generate_file(g)
+    generate_cnf_file(g, RubikCube.from_dims((1, 3, 3)), "clauses_1_3_3", verbose=True)
+
+    for i, rc in enumerate(g.nodes):
+        print(f"Estado {i = }")
+        print(f'{rc = }')
+        print(f'{g.nodes[rc] = }')
+        print("Vecinos:")
+        neighbors = list(g[rc].keys())
+        neighbors.sort(key=lambda x: hash(x))
+        print(g[rc])
+
+    # gp = GraphPlotter(g)
+    # U, V = gp.compute_bipartite_layout(scale=1, aspect_ratio=2000000000)
+    # gp.compute_kamada_kawai_layout(scale=10)
+    # U, V = gp.find_bipartite()
+    # gp.draw()
+
+    # Dictionaries in the convention id - Rubik's Cube. Bipartition
+    # print({g.nodes[n]["id"]: n for n in U})
+    # print({g.nodes[n]["id"]: n for n in V})
+
+    # plt.show()
+
+
+def main7():
+    g: nx.Graph = make_graph(
+        (1, 3, 3),
+        {CM.R2, CM.L2, CM.B2, CM.F2}
+    )
+    n: int = len(g)
+    m: int = g.number_of_edges()
+    print(f"{n = }, {m = }")
+    generate_file(g)
+    generate_cnf_file(g, RubikCube.from_dims((1, 3, 3)), "clauses_1_3_3", verbose=True)
+
+
 if __name__ == '__main__':
-    main2()
+    main7()
     # main5()
