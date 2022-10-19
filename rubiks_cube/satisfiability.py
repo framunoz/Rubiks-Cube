@@ -73,7 +73,8 @@ def generate_clauses(g: nx.Graph, s: int, t: int) -> list[list[int, ...]]:
 
 
 def generate_cnf_file(graph: nx.Graph, t: RubikCube,
-                      source_path="clauses", name_format="rubik-{}.cnf"):
+                      source_path="clauses", name_format="rubik-{}.cnf",
+                      verbose=False):
     """
     Creates the necessary files with the cnf format.
 
@@ -81,8 +82,11 @@ def generate_cnf_file(graph: nx.Graph, t: RubikCube,
     :param t: The final node as a RubikCube instance
     :param source_path: The source folder where the files will be saved.
     :param name_format: The format of how the files will be saved.
+    :param verbose: To see further information of the process of generating clauses.
     :return: Nothing.
     """
+    if verbose:
+        print("Finding the bipartite")
     # t id node
     t_ = graph.nodes[t]["id"]
     # Finding the bipartite
@@ -91,10 +95,16 @@ def generate_cnf_file(graph: nx.Graph, t: RubikCube,
 
     # Making the directory in the case that it does not exist
     if not os.path.isdir(source_path):
+        if verbose:
+            print("Making the source directory")
         os.mkdir(source_path)
 
-    for s in W:
+    if verbose:
+        print(f"Total number of clauses: {len(W)}")
+    for i, s in enumerate(W):
         s_ = graph.nodes[s]["id"]
+        if verbose:
+            print(f"Generating the clause {i + 1}/{len(W)} of the Rubik's Cube with id = {s_}")
         clauses = generate_clauses(graph, s_, t_)
         cnf = CNF(from_clauses=clauses)
         cnf.to_file(os.path.join(source_path, name_format.format(s_)))
