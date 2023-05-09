@@ -1,4 +1,4 @@
-setuptools==65.3.0
+setuptools
 
 numpy==1.23.2
 networkx>=2.8.6
