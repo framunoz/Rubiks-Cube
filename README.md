@@ -1,3 +1,5 @@
+![banner](img/portada-rubics-cube.jpg)
+
 # Rubiks-Cube
 
 A lightweight Python library that implements a representation of a Rubik's Cube for research and simulation purposes. This library allows you to create cubes of various dimensions, apply movements, and even analyze the state space using graph theory.
